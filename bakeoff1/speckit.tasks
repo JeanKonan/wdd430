@@ -1,0 +1,620 @@
+# Skateboard Rental App - Minimum Viable Prototype Tasks
+
+## Project Scope: Bare Minimum for Class Presentation
+
+**Goal**: Build a working prototype of the skateboard rental application with core features only
+**Target Timeline**: 2-3 weeks
+**Team**: 4 people (2 frontend, 2 backend)
+
+---
+
+## Phase 1: Project Setup (Days 1-2)
+
+### Backend Setup
+- [ ] Initialize Node.js/Express project
+- [ ] Set up PostgreSQL database connection
+- [ ] Create basic project structure (routes, controllers, models)
+- [ ] Set up environment variables (.env file)
+- [ ] Create simple migration script for database tables
+- [ ] Test database connection with sample data
+
+### Frontend Setup
+- [ ] Initialize React project with Vite
+- [ ] Basic project structure (components, pages, services)
+- [ ] Set up React Router
+- [ ] Set up Axios for API calls
+- [ ] Test basic component rendering
+
+### Shared
+- [ ] Initialize Git repository
+- [ ] Create basic README with setup instructions
+- [ ] Set up simple npm scripts for dev/build
+
+**Deliverable**: Both frontend and backend running locally
+
+---
+
+## Phase 2: User Authentication - SIMPLIFIED (Days 2-4)
+
+### Backend
+- [ ] User model (email, password, name only)
+- [ ] POST /api/auth/register endpoint (basic validation)
+- [ ] POST /api/auth/login endpoint (return simple token)
+- [ ] Basic password hashing with bcrypt
+- [ ] Store user in database
+
+### Frontend
+- [ ] Login page (email + password form)
+- [ ] Register page (email + password + name form)
+- [ ] Store token in localStorage
+- [ ] Route protection (PrivateRoute component)
+- [ ] Logout functionality
+
+### Testing
+- [ ] Can register new user
+- [ ] Can login with valid credentials
+- [ ] Cannot access protected pages without login
+- [ ] Token persists on page refresh
+
+**Deliverable**: Users can register and login, protected routes work
+
+---
+
+## Phase 3: Skateboard Catalog - SIMPLIFIED (Days 4-6)
+
+### Backend
+- [ ] Skateboard model (name, type, brand, price_per_hour, status only)
+- [ ] Pre-populate 10-15 skateboards in database
+- [ ] GET /api/skateboards endpoint (no filters, just list)
+- [ ] GET /api/skateboards/:id endpoint
+
+### Frontend
+- [ ] Skateboard listing page showing all skateboards
+- [ ] Simple grid/list display with image placeholder
+- [ ] Skateboard detail page (modal or separate page)
+- [ ] Display name, type, brand, price
+- [ ] Link to booking from detail page
+
+### Testing
+- [ ] Can see all skateboards
+- [ ] Can click to view skateboard details
+- [ ] Price displays correctly
+
+**Deliverable**: Users can browse available skateboards
+
+---
+
+## Phase 4: Rental Booking - SIMPLIFIED (Days 6-9)
+
+### Backend
+- [ ] Rental model (user_id, skateboard_id, pickup_date, return_date, status)
+- [ ] POST /api/rentals endpoint (create booking)
+- [ ] GET /api/rentals endpoint (user's rentals)
+- [ ] Simple availability check (prevent double-booking)
+- [ ] Calculate total price (hours * price_per_hour)
+
+### Frontend
+- [ ] Booking form on skateboard detail page
+- [ ] Date/time picker (HTML date/time inputs)
+- [ ] Display calculated price
+- [ ] Show booking confirmation message
+- [ ] Add to user dashboard (my rentals)
+
+### Testing
+- [ ] Can book available skateboard
+- [ ] Total price calculates correctly
+- [ ] Cannot book already booked skateboard
+- [ ] Booking appears in user dashboard
+- [ ] Rental data saved to database
+
+**Deliverable**: Users can book skateboards and see their rentals
+
+---
+
+## Phase 5: User Dashboard (Days 9-10)
+
+### Backend
+- [ ] GET /api/rentals (return user's rentals with skateboard details)
+- [ ] GET /api/users/:id (basic user profile)
+
+### Frontend
+- [ ] Dashboard page showing:
+  - Active rentals with countdown timer
+  - Past rentals
+  - User profile info
+- [ ] Cancel rental button (optional)
+- [ ] Rental history list
+
+### Testing
+- [ ] Can see active rentals
+- [ ] Can see past rentals
+- [ ] Rentals show correct information
+- [ ] Can cancel upcoming rental
+
+**Deliverable**: Users have functional dashboard
+
+---
+
+## Phase 6: Basic Admin Features (Days 10-11)
+
+### Backend
+- [ ] Simple role field on User model (customer/admin)
+- [ ] POST /api/skateboards (admin only - add new skateboard)
+- [ ] PUT /api/skateboards/:id (admin only - edit skateboard)
+- [ ] GET /api/admin/dashboard (basic stats: total users, rentals, revenue)
+
+### Frontend
+- [ ] Admin page (restricted to admin role)
+- [ ] View stats (total revenue, rentals, users)
+- [ ] Add new skateboard form
+- [ ] Edit skateboard form
+- [ ] List all skateboards (with edit button)
+
+### Testing
+- [ ] Can access admin page only as admin
+- [ ] Can add new skateboard
+- [ ] Can edit skateboard details
+- [ ] Stats display correctly
+
+**Deliverable**: Admin can manage skateboards and view basic analytics
+
+---
+
+## Phase 7: Simple Return Process (Days 11-12)
+
+### Backend
+- [ ] PUT /api/rentals/:id/return endpoint
+- [ ] Update rental status to "returned"
+- [ ] Basic condition assessment field (good/damaged)
+- [ ] Damage charge calculation if applicable
+
+### Frontend
+- [ ] Return form on active rental
+- [ ] Condition assessment dropdown (good/damage noted)
+- [ ] Submit return button
+- [ ] Show return confirmation
+
+### Testing
+- [ ] Can mark rental as returned
+- [ ] Returned rentals disappear from active
+- [ ] Damage notes saved
+
+**Deliverable**: Basic return workflow functional
+
+---
+
+## Phase 8: Polish & Presentation (Days 12-14)
+
+### Frontend
+- [ ] Basic styling (use TailwindCSS or simple CSS)
+- [ ] Navigation menu
+- [ ] Loading states on buttons
+- [ ] Error messages for API failures
+- [ ] Mobile responsive layout basics
+- [ ] Consistent color scheme
+
+### Backend
+- [ ] Error handling for common cases
+- [ ] Input validation
+- [ ] Proper HTTP status codes
+
+### Testing & Documentation
+- [ ] Test all happy path scenarios
+- [ ] Document how to run the app
+- [ ] Create sample admin account
+- [ ] Create sample user account
+- [ ] Pre-populate database with sample data
+
+### Presentation Preparation
+- [ ] Create demo user accounts
+- [ ] Test entire flow (register → browse → book → return → dashboard)
+- [ ] Create 20-30 second demo walkthrough
+- [ ] Prepare talking points
+
+**Deliverable**: Polished, working prototype ready to present
+
+---
+
+## Bare Minimum Task Checklist
+
+### Must Have ✓
+- [ ] User registration and login
+- [ ] View skateboard catalog (list + detail)
+- [ ] Book skateboard (with date picker)
+- [ ] View user dashboard with rentals
+- [ ] Basic return process
+- [ ] Admin add/edit skateboards
+- [ ] Database storing and retrieving data
+- [ ] Responsive design basics
+
+### Nice to Have (if time permits)
+- [ ] Price calculation and display
+- [ ] Skateboard availability checking
+- [ ] Rental status filtering
+- [ ] Admin dashboard with stats
+- [ ] Cancel rental option
+- [ ] Better styling
+
+### Skip for Prototype
+- [ ] Payment processing (Stripe integration)
+- [ ] Email notifications
+- [ ] QR codes
+- [ ] Damage claims system
+- [ ] Late fees
+- [ ] SMS notifications
+- [ ] Advanced analytics
+- [ ] Multi-language support
+- [ ] Advanced search/filters
+
+---
+
+## Database Schema - Minimal Version
+
+### Users Table
+```sql
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  role VARCHAR(50) DEFAULT 'customer',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Skateboards Table
+```sql
+CREATE TABLE skateboards (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  type VARCHAR(50),
+  brand VARCHAR(100),
+  price_per_hour DECIMAL(10,2),
+  status VARCHAR(50) DEFAULT 'available',
+  image_url VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Rentals Table
+```sql
+CREATE TABLE rentals (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id),
+  skateboard_id INTEGER REFERENCES skateboards(id),
+  pickup_date TIMESTAMP NOT NULL,
+  return_date TIMESTAMP NOT NULL,
+  actual_return_date TIMESTAMP,
+  status VARCHAR(50) DEFAULT 'pending',
+  total_price DECIMAL(10,2),
+  condition_at_return VARCHAR(50),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+---
+
+## API Endpoints - Minimal Version
+
+### Authentication
+```
+POST /api/auth/register
+POST /api/auth/login
+POST /api/auth/logout
+```
+
+### Skateboards
+```
+GET /api/skateboards
+GET /api/skateboards/:id
+POST /api/skateboards (admin only)
+PUT /api/skateboards/:id (admin only)
+```
+
+### Rentals
+```
+POST /api/rentals
+GET /api/rentals
+GET /api/rentals/:id
+PUT /api/rentals/:id/return
+DELETE /api/rentals/:id (cancel)
+```
+
+### Admin
+```
+GET /api/admin/dashboard
+```
+
+---
+
+## Pages/Components - Minimal Version
+
+### Pages
+1. **LoginPage** - Email + password login
+2. **RegisterPage** - Email + password + name signup
+3. **CatalogPage** - Browse all skateboards
+4. **SkateboardDetailPage** - View skateboard + book option
+5. **BookingPage** - Create new rental with date picker
+6. **DashboardPage** - User rentals, profile, active rentals
+7. **ReturnPage** - Return a skateboard
+8. **AdminPage** - Admin dashboard, manage skateboards
+
+### Components
+- LoginForm
+- RegisterForm
+- BookingForm
+- SkateboardCard
+- SkateboardGridOrList
+- RentalCard
+- Navigation
+- ProtectedRoute
+
+---
+
+## Sample Data to Pre-populate
+
+Create 15 sample skateboards:
+```javascript
+[
+  { name: "Pro Street 8.5", type: "street", brand: "Element", price_per_hour: 5 },
+  { name: "Cruiser Deluxe", type: "cruiser", brand: "Sector 9", price_per_hour: 4 },
+  { name: "Longboard Wave", type: "longboard", brand: "Loaded", price_per_hour: 6 },
+  { name: "Tech Deck", type: "street", brand: "Primitive", price_per_hour: 5 },
+  { name: "Speed Route", type: "longboard", brand: "Caliber", price_per_hour: 6 },
+  // ... 10 more
+]
+```
+
+Create 2 sample users:
+```
+Admin User:
+- Email: admin@example.com
+- Password: admin123
+- Role: admin
+
+Demo User:
+- Email: demo@example.com
+- Password: demo123
+- Role: customer
+```
+
+---
+
+## Presentation Outline (5 minutes)
+
+1. **Introduction** (30 sec)
+   - "This is a skateboard rental web application"
+   - Show mockup/spec
+
+2. **Demo** (3 min)
+   - Register new account
+   - Browse skateboards
+   - Book a skateboard (select dates)
+   - View dashboard
+   - Return skateboard
+   - Login as admin, add new skateboard
+
+3. **Technology** (30 sec)
+   - Frontend: React + Vite
+   - Backend: Node.js + Express
+   - Database: PostgreSQL
+   - Hosting: Can be deployed to Heroku/AWS
+
+4. **Q&A** (1 min)
+   - Listen to feedback
+   - Note improvements for full version
+
+---
+
+## Daily Checklist by Role
+
+### Frontend Developer 1
+- **Day 1**: Vite setup, basic components, React Router
+- **Day 2-3**: Login/Register pages and forms
+- **Day 4-5**: Skateboard listing and detail pages
+- **Day 6-8**: Booking form with date picker, confirmation
+- **Day 9-10**: Dashboard page, rental list, active rentals
+- **Day 11**: Return page and form
+- **Day 12-13**: Styling, responsive design, navigation menu
+- **Day 14**: Polish, test entire flow
+
+### Frontend Developer 2
+- **Day 1**: Vite setup, utility functions, Axios setup
+- **Day 2-3**: Login/Register form validation
+- **Day 4-5**: Skateboard components, detail modal/page
+- **Day 6-8**: Booking form, API integration
+- **Day 9-10**: Dashboard styling, rental card components
+- **Day 11**: Return form, confirmation UI
+- **Day 12-13**: Error messages, loading states, styling
+- **Day 14**: Admin page (if time)
+
+### Backend Developer 1
+- **Day 1**: Express setup, database connection, env config
+- **Day 2**: User model, register/login endpoints
+- **Day 3**: Password hashing, error handling
+- **Day 4-5**: Skateboard model, GET endpoints, seed data
+- **Day 6-7**: Rental model, POST /rentals endpoint
+- **Day 8-9**: Availability checking, GET /rentals endpoints
+- **Day 10-11**: Return endpoint, status updates
+- **Day 12-13**: Validation, error handling
+- **Day 14**: Testing, documentation
+
+### Backend Developer 2
+- **Day 1**: Express setup, database schema, migrations
+- **Day 2-3**: Auth middleware, JWT validation
+- **Day 4-5**: Database schema optimization, indexes
+- **Day 6-7**: Price calculation logic, rental service
+- **Day 8-9**: API response formatting, admin endpoints
+- **Day 10-11**: CORS, error handling, logging
+- **Day 12-13**: Testing, seed data script
+- **Day 14**: Documentation, README
+
+---
+
+## Testing Checklist for Presentation (Happy Path Only)
+
+### User Authentication
+- [ ] Can register with valid email/password
+- [ ] Can login with registered credentials
+- [ ] Cannot login with wrong password
+- [ ] Cannot access dashboard without login
+- [ ] Can logout
+
+### Skateboard Browsing
+- [ ] Can see list of all skateboards
+- [ ] Can click skateboard to view details
+- [ ] Details show correct information
+
+### Booking
+- [ ] Can select dates and submit booking
+- [ ] Total price calculates and displays
+- [ ] Booking appears in dashboard
+- [ ] Cannot book dates in the past
+- [ ] Cannot double-book same skateboard
+
+### Dashboard
+- [ ] Can see active rentals
+- [ ] Can see past rentals
+- [ ] Active rentals show countdown timer or return date
+- [ ] Can cancel upcoming rental
+
+### Return
+- [ ] Can mark rental as returned
+- [ ] Can note condition (good/damaged)
+- [ ] Rental moves to past rentals
+
+### Admin
+- [ ] Can login as admin
+- [ ] Can see admin dashboard (stats)
+- [ ] Can add new skateboard
+- [ ] Can edit existing skateboard
+
+---
+
+## Time Estimates
+
+| Task | Estimated Hours | Days |
+|------|-----------------|------|
+| Project Setup | 2 | 0.5 |
+| Authentication | 4 | 1 |
+| Skateboard Catalog | 3 | 0.75 |
+| Rental Booking | 5 | 1.25 |
+| Dashboard | 4 | 1 |
+| Admin Features | 3 | 0.75 |
+| Return Process | 2 | 0.5 |
+| Styling & Polish | 6 | 1.5 |
+| Testing & Fixes | 4 | 1 |
+| **Total** | **33 hours** | **~8 days** |
+
+With 4 people: ~8 hours per person = **2 days of work each in parallel** (doable in 2-3 weeks part-time)
+
+---
+
+## Success Criteria for Prototype
+
+✓ **Must Have**
+- Users can register, login, logout
+- Users can browse and book skateboards
+- Users can see their rental history
+- Admin can manage skateboards
+- Basic return process works
+- Data persists in database
+- Responsive on mobile and desktop
+
+✓ **Nice to Have**
+- Dates cannot be double-booked
+- Price calculates correctly
+- Good styling and UX
+- Admin dashboard with stats
+- Skateboard images display
+
+✗ **Out of Scope**
+- Real payment processing
+- Email confirmations
+- Damage claims system
+- Advanced filtering
+- Real-time availability updates
+
+---
+
+## Quick Reference: What to Avoid for Prototype
+
+❌ **Don't spend time on:**
+- Payment processing (Stripe) - use mock/hardcoded for now
+- Email sending - skip for prototype
+- QR codes - not needed for demo
+- Damage claims - too complex for MVP
+- Image uploads - use placeholder URLs
+- Advanced analytics - just show user count, rental count
+- Mobile app - web only for prototype
+- Advanced security - basic bcrypt is fine
+- Performance optimization - not critical for demo
+- Multi-language support
+- Comprehensive testing - just test happy paths
+
+✅ **Do focus on:**
+- Clean, working UI
+- Core features working end-to-end
+- Responsive design
+- Professional presentation
+- Good demo data
+- Clear navigation
+- Error messages
+
+---
+
+## Resources for Rapid Development
+
+### Code Templates to Use
+- Boilerplate React components (via Vite template)
+- Express boilerplate
+- Sequelize model examples
+- TailwindCSS for quick styling
+
+### Libraries to Simplify
+- `react-datepicker` for date selection
+- `axios` for HTTP (instead of fetch)
+- `bcryptjs` for password hashing
+- `jsonwebtoken` for tokens
+- `dotenv` for environment variables
+- `TailwindCSS` for styling (vs custom CSS)
+
+### Avoid Over-engineering
+- Don't create service layers if not needed
+- Don't build reusable hooks initially
+- Don't optimize queries on day 1
+- Don't build elaborate error handling
+- Don't create components that aren't used yet
+
+---
+
+## Go-Live Checklist (Day 14)
+
+- [ ] Database seeded with sample data
+- [ ] Admin account created and working
+- [ ] Demo user account created
+- [ ] Both users have sample rentals for demo
+- [ ] App runs without errors on fresh startup
+- [ ] All navigation works
+- [ ] Forms submit and validate
+- [ ] Responsive design checked on phone
+- [ ] README has setup instructions
+- [ ] GitHub repo has clean commits
+- [ ] Demo script prepared and timed
+- [ ] Slides or talking points ready
+- [ ] Clear explanation of what's MVP vs future
+
+---
+
+## Presentation Tips
+
+1. **Start with the deployed version** - Show live if possible, or localhost
+2. **Have a script** - "Click here to see skateboards... now I'll book one..."
+3. **Use pre-populated accounts** - Don't spend time registering during demo
+4. **Have backup slides** - Tech fails, be ready with screenshots
+5. **Explain the stack** - "We used React, Node, PostgreSQL..."
+6. **Show the database** - Quick screenshot of data in Postgres
+7. **Ask for feedback** - "What features would you like to see next?"
+8. **Be honest about MVP** - "This is v1, we plan to add payments, emails, etc."
+
+Good luck with your presentation! 🛹

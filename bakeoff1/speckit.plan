@@ -1,0 +1,1368 @@
+# Skateboard Rental Application - Implementation Plan
+
+## 1. Project Overview & Technology Stack
+
+### 1.1 Technology Choices
+
+**Frontend**
+- **React 18+** with JavaScript (not TypeScript for faster development)
+- **Vite** as build tool (faster than Create React App)
+- **React Router v6** for navigation
+- **Axios** for HTTP requests
+- **TailwindCSS** for styling
+- **React Query** for server state management
+- **Zustand** for client state management
+- **Vite PWA Plugin** for offline support
+
+**Backend**
+- **Node.js 18 LTS** runtime
+- **Express 4.x** web framework
+- **PostgreSQL 14+** relational database
+- **Sequelize** ORM for database operations
+- **JWT** for authentication with `jsonwebtoken` package
+- **Bcrypt** for password hashing
+- **Dotenv** for environment configuration
+- **CORS** middleware for cross-origin requests
+- **Helmet** for security headers
+- **Morgan** for request logging
+
+**Development Tools**
+- **Git** for version control
+- **GitHub** for repository hosting
+- **Docker** for containerization
+- **Docker Compose** for local development environment
+- **Jest** for unit testing
+- **Supertest** for API testing
+- **React Testing Library** for component testing
+- **ESLint** and **Prettier** for code quality
+- **GitHub Actions** for CI/CD pipeline
+
+---
+
+## 2. Project Directory Structure
+
+```
+skateboard-rental/
+├── frontend/                          # React application
+│   ├── public/
+│   │   ├── index.html
+│   │   ├── favicon.ico
+│   │   └── assets/
+│   ├── src/
+│   │   ├── components/               # Reusable components
+│   │   │   ├── Auth/
+│   │   │   ├── Skateboard/
+│   │   │   ├── Rental/
+│   │   │   ├── Dashboard/
+│   │   │   ├── Common/
+│   │   │   └── Admin/
+│   │   ├── pages/                    # Page components
+│   │   │   ├── LoginPage.jsx
+│   │   │   ├── RegisterPage.jsx
+│   │   │   ├── SearchPage.jsx
+│   │   │   ├── RentalPage.jsx
+│   │   │   ├── DashboardPage.jsx
+│   │   │   └── AdminDashboard.jsx
+│   │   ├── hooks/                    # Custom React hooks
+│   │   │   ├── useAuth.js
+│   │   │   ├── useRental.js
+│   │   │   └── useSkateboard.js
+│   │   ├── services/                 # API service layer
+│   │   │   ├── authService.js
+│   │   │   ├── skateboardService.js
+│   │   │   ├── rentalService.js
+│   │   │   └── paymentService.js
+│   │   ├── store/                    # Zustand store
+│   │   │   ├── authStore.js
+│   │   │   ├── rentalStore.js
+│   │   │   └── uiStore.js
+│   │   ├── styles/                   # Global styles
+│   │   │   ├── variables.css
+│   │   │   ├── global.css
+│   │   │   └── tailwind.css
+│   │   ├── utils/                    # Utility functions
+│   │   │   ├── formatters.js
+│   │   │   ├── validators.js
+│   │   │   └── constants.js
+│   │   ├── App.jsx                   # Root component
+│   │   └── main.jsx                  # Entry point
+│   ├── index.html
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   ├── .eslintrc.js
+│   ├── .prettierrc
+│   └── package.json
+│
+├── backend/                           # Node.js/Express application
+│   ├── src/
+│   │   ├── config/                   # Configuration files
+│   │   │   ├── database.js
+│   │   │   ├── environment.js
+│   │   │   └── constants.js
+│   │   ├── controllers/              # Request handlers
+│   │   │   ├── authController.js
+│   │   │   ├── skateboardController.js
+│   │   │   ├── rentalController.js
+│   │   │   ├── paymentController.js
+│   │   │   └── adminController.js
+│   │   ├── models/                   # Sequelize models
+│   │   │   ├── User.js
+│   │   │   ├── Skateboard.js
+│   │   │   ├── Rental.js
+│   │   │   ├── Payment.js
+│   │   │   ├── DamageClaim.js
+│   │   │   └── index.js
+│   │   ├── routes/                   # API routes
+│   │   │   ├── authRoutes.js
+│   │   │   ├── skateboardRoutes.js
+│   │   │   ├── rentalRoutes.js
+│   │   │   ├── paymentRoutes.js
+│   │   │   ├── adminRoutes.js
+│   │   │   └── index.js
+│   │   ├── middleware/               # Express middleware
+│   │   │   ├── authMiddleware.js
+│   │   │   ├── errorHandler.js
+│   │   │   ├── validationMiddleware.js
+│   │   │   └── corsMiddleware.js
+│   │   ├── services/                 # Business logic
+│   │   │   ├── authService.js
+│   │   │   ├── skateboardService.js
+│   │   │   ├── rentalService.js
+│   │   │   ├── paymentService.js
+│   │   │   └── emailService.js
+│   │   ├── utils/                    # Utility functions
+│   │   │   ├── logger.js
+│   │   │   ├── validators.js
+│   │   │   ├── formatters.js
+│   │   │   └── errorHandler.js
+│   │   ├── migrations/               # Database migrations
+│   │   │   ├── 001-create-users.js
+│   │   │   ├── 002-create-skateboards.js
+│   │   │   ├── 003-create-rentals.js
+│   │   │   └── ...
+│   │   └── app.js                    # Express app setup
+│   ├── tests/                         # Test files
+│   │   ├── unit/
+│   │   │   ├── authService.test.js
+│   │   │   ├── rentalService.test.js
+│   │   │   └── ...
+│   │   └── integration/
+│   │       ├── auth.test.js
+│   │       ├── rentals.test.js
+│   │       └── ...
+│   ├── .env.example
+│   ├── .eslintrc.js
+│   ├── .prettierrc
+│   ├── server.js                    # Server entry point
+│   └── package.json
+│
+├── shared/                           # Shared utilities/types
+│   ├── constants.js
+│   └── validators.js
+│
+├── docker-compose.yml                # Local development environment
+├── .gitignore
+├── README.md
+└── CONTRIBUTING.md
+```
+
+---
+
+## 3. Development Phases
+
+### Phase 1: Foundation & Setup (Week 1)
+
+**Goals**: Initialize projects, set up development environment, create database schema
+
+**Tasks**:
+- [ ] Initialize Git repository and GitHub project
+- [ ] Set up React project with Vite
+- [ ] Set up Express/Node.js project
+- [ ] Configure Docker and Docker Compose for local dev
+- [ ] Create PostgreSQL database schema
+- [ ] Set up ESLint and Prettier for both projects
+- [ ] Configure environment variables (.env files)
+- [ ] Create CI/CD pipeline skeleton (GitHub Actions)
+- [ ] Set up test environments (Jest, React Testing Library, Supertest)
+- [ ] Document development setup in README
+
+**Deliverables**:
+- Working local development environment
+- Database migrations ready
+- Basic project structure with proper linting
+- CI/CD pipeline triggering on push (failures expected)
+
+**Team Allocation**: Full team (2 Frontend, 2 Backend, 1 DevOps)
+
+---
+
+### Phase 2: User Authentication (Week 1-2)
+
+**Goals**: Implement user registration, login, and authentication flow
+
+**Frontend Tasks**:
+- [ ] Create login page component
+- [ ] Create registration page component
+- [ ] Implement form validation
+- [ ] Set up authentication service
+- [ ] Store JWT tokens in localStorage
+- [ ] Implement route protection (PrivateRoute component)
+- [ ] Create logout functionality
+- [ ] Add password reset flow skeleton
+- [ ] Display form error messages
+
+**Backend Tasks**:
+- [ ] Create User model in Sequelize
+- [ ] Implement POST /api/auth/register endpoint
+- [ ] Implement POST /api/auth/login endpoint
+- [ ] Implement POST /api/auth/logout endpoint
+- [ ] Create authMiddleware for JWT validation
+- [ ] Hash passwords with bcrypt
+- [ ] Add email validation
+- [ ] Implement refresh token logic
+- [ ] Set up error handling for auth failures
+
+**Testing**:
+- [ ] Unit tests for password hashing
+- [ ] Unit tests for JWT generation
+- [ ] Integration tests for registration endpoint
+- [ ] Integration tests for login endpoint
+- [ ] Component tests for login/register pages
+
+**Deliverables**:
+- Users can register with email and password
+- Users can login with credentials
+- JWT tokens issued and validated
+- Protected routes accessible only to authenticated users
+- Comprehensive auth tests
+
+**Team Allocation**: 1 Frontend, 1 Backend
+
+---
+
+### Phase 3: Skateboard Inventory (Week 2)
+
+**Goals**: Build skateboard listing, search, and filtering functionality
+
+**Frontend Tasks**:
+- [ ] Create skateboard card component
+- [ ] Create search page with filters (type, features, price)
+- [ ] Implement filter state management
+- [ ] Create skateboard detail modal/page
+- [ ] Add to wishlist functionality
+- [ ] Display availability status
+- [ ] Add image gallery for skateboard photos
+- [ ] Responsive grid layout for listings
+- [ ] Implement pagination or infinite scroll
+- [ ] Add sorting options (price, rating, newest)
+
+**Backend Tasks**:
+- [ ] Create Skateboard model in Sequelize
+- [ ] Implement GET /api/skateboards endpoint with filtering
+- [ ] Implement GET /api/skateboards/:id endpoint
+- [ ] Add full-text search capability
+- [ ] Implement pagination query parameters
+- [ ] Create database indexes for performance
+- [ ] Add caching strategy for skateboard listings
+- [ ] Implement POST /api/skateboards (admin only)
+- [ ] Implement PUT /api/skateboards/:id (admin only)
+
+**Testing**:
+- [ ] Unit tests for search/filter logic
+- [ ] Integration tests for skateboard endpoints
+- [ ] Component tests for search page and filters
+- [ ] Performance tests for search response time (<500ms)
+
+**Deliverables**:
+- Users can view all available skateboards
+- Advanced search with filters working
+- Skateboard detail view with images
+- Admin can add and edit skateboards
+- Search response time < 500ms
+
+**Team Allocation**: 2 Frontend, 2 Backend
+
+---
+
+### Phase 4: Rental Booking (Week 3)
+
+**Goals**: Implement rental booking, pricing, and reservation system
+
+**Frontend Tasks**:
+- [ ] Create rental booking form component
+- [ ] Date/time picker for pickup and return
+- [ ] Dynamic price calculation display
+- [ ] Rental summary view before confirmation
+- [ ] Accept rental agreement checkbox
+- [ ] Display rental confirmation with QR code
+- [ ] Save rental to user dashboard
+- [ ] Send booking confirmation email
+- [ ] Add booking cancellation option
+- [ ] Show rental history on dashboard
+
+**Backend Tasks**:
+- [ ] Create Rental model in Sequelize
+- [ ] Implement POST /api/rentals endpoint
+- [ ] Implement GET /api/rentals endpoint (user's rentals)
+- [ ] Implement GET /api/rentals/:id endpoint
+- [ ] Create price calculation service
+- [ ] Check skateboard availability for date range
+- [ ] Generate QR code for rental
+- [ ] Implement rental cancellation logic
+- [ ] Add validation for date ranges
+- [ ] Send confirmation email via email service
+
+**Testing**:
+- [ ] Unit tests for price calculation
+- [ ] Unit tests for availability checking
+- [ ] Integration tests for rental booking
+- [ ] Integration tests for cancellation
+- [ ] Component tests for booking form
+- [ ] Edge case tests (overlapping dates, invalid dates)
+
+**Deliverables**:
+- Users can book skateboards with date/time selection
+- Dynamic pricing calculated correctly
+- Rental confirmation with QR code generated
+- Email notifications sent
+- Rental history accessible in dashboard
+- Cancellation workflow functional
+
+**Team Allocation**: 2 Frontend, 2 Backend
+
+---
+
+### Phase 5: Payment Processing (Week 3-4)
+
+**Goals**: Implement payment processing and security
+
+**Frontend Tasks**:
+- [ ] Create payment form component
+- [ ] Integrate Stripe `react-stripe-js` library
+- [ ] Handle payment submission
+- [ ] Display payment status and confirmation
+- [ ] Show invoice/receipt
+- [ ] Handle payment errors gracefully
+- [ ] PCI compliance (no sensitive data in app)
+- [ ] Add payment method selection
+- [ ] Implement cardholder information form
+
+**Backend Tasks**:
+- [ ] Create Payment model in Sequelize
+- [ ] Integrate Stripe API for payment processing
+- [ ] Implement POST /api/payments endpoint
+- [ ] Implement charge capture on checkout
+- [ ] Implement refund processing
+- [ ] Add payment validation
+- [ ] Create webhook handler for Stripe events
+- [ ] Implement secure payment token handling
+- [ ] Add transaction logging for audits
+- [ ] Handle failed payment recovery
+
+**Testing**:
+- [ ] Integration tests with Stripe test api keys
+- [ ] Unit tests for payment calculations
+- [ ] Component tests for payment form
+- [ ] Security tests for PCI compliance
+- [ ] Webhook handler tests
+
+**Deliverables**:
+- Users can input payment information securely
+- Payments processed via Stripe
+- Payment confirmation and receipts issued
+- Refunds processed automatically for undamaged returns
+- Payment history tracked in database
+
+**Team Allocation**: 1 Frontend, 1 Backend (Stripe specialist)
+
+---
+
+### Phase 6: Check-in/Check-out (Week 4)
+
+**Goals**: Implement QR code check-in/out and equipment condition assessment
+
+**Frontend Tasks**:
+- [ ] Create QR code scanner component
+- [ ] Manual code entry fallback form
+- [ ] Condition assessment form
+- [ ] Photo upload for damage documentation
+- [ ] Staff vs. customer interface variations
+- [ ] Check-in/out success confirmation
+- [ ] Display rental countdown timer
+- [ ] Show return location and deadline
+
+**Backend Tasks**:
+- [ ] Implement PUT /api/rentals/:id/checkin endpoint
+- [ ] Implement PUT /api/rentals/:id/checkout endpoint
+- [ ] QR code validation logic
+- [ ] Manual code validation
+- [ ] Update rental status in database
+- [ ] Save condition assessment
+- [ ] Store damage photos to S3
+- [ ] Send SMS/email notifications on check-in/out
+- [ ] Update skateboard location
+
+**Testing**:
+- [ ] Unit tests for QR code parsing
+- [ ] Integration tests for check-in/out
+- [ ] Component tests for scanner UI
+- [ ] Tests for condition assessment form
+
+**Deliverables**:
+- QR code-based check-in/out working
+- Manual PIN code fallback functional
+- Condition assessment captured
+- Damage photos stored
+- Notifications sent to user
+- Rental data updated correctly
+
+**Team Allocation**: 2 Frontend, 2 Backend
+
+---
+
+### Phase 7: Return & Damage Processing (Week 4-5)
+
+**Goals**: Implement return workflow, damage claims, and late fees
+
+**Frontend Tasks**:
+- [ ] Create return dashboard component
+- [ ] Display condition assessment at return
+- [ ] Show damage charges if applicable
+- [ ] Damage dispute form
+- [ ] Appeal submission UI
+- [ ] Late fee explanation
+- [ ] Return receipt and invoice generation
+- [ ] Display refund status
+
+**Backend Tasks**:
+- [ ] Implement PUT /api/rentals/:id/return endpoint
+- [ ] Calculate late fees
+- [ ] Create DamageClaim model
+- [ ] Implement damage claim logic
+- [ ] Create dispute resolution workflow
+- [ ] Calculate refunds and charges
+- [ ] Process refunds to payment method
+- [ ] Generate return invoice
+- [ ] Send return confirmation email
+- [ ] Update skateboard condition in inventory
+
+**Testing**:
+- [ ] Unit tests for late fee calculation
+- [ ] Unit tests for refund logic
+- [ ] Integration tests for return process
+- [ ] Integration tests for damage claims
+- [ ] Component tests for return UI
+- [ ] Edge case tests (partial damage, disputes)
+
+**Deliverables**:
+- Return workflow complete and tested
+- Damage assessment and claims functional
+- Late fees calculated and applied
+- Refunds processed correctly
+- Dispute process available
+- All documentation generated
+
+**Team Allocation**: 2 Frontend, 2 Backend
+
+---
+
+### Phase 8: User Dashboard (Week 5)
+
+**Goals**: Build user-facing dashboard with history and account management
+
+**Frontend Tasks**:
+- [ ] Create dashboard layout component
+- [ ] Display active rentals with countdown
+- [ ] Display rental history with filtering
+- [ ] Show account settings form
+- [ ] Payment method management UI
+- [ ] Profile information edit form
+- [ ] Password change form
+- [ ] Download invoice functionality
+- [ ] Add notification preferences
+- [ ] Responsive mobile layout
+
+**Backend Tasks**:
+- [ ] Implement GET /api/users/:id endpoint
+- [ ] Implement PUT /api/users/:id endpoint
+- [ ] Implement GET /api/users/:id/rentals endpoint
+- [ ] Implement GET /api/users/:id/payments endpoint
+- [ ] Implement password change endpoint
+- [ ] Implement payment method storage
+- [ ] Add user stats (total rentals, amount spent)
+- [ ] Implement notification preferences storage
+
+**Testing**:
+- [ ] Component tests for all dashboard sections
+- [ ] Integration tests for user endpoints
+- [ ] Tests for form validation and submission
+
+**Deliverables**:
+- User dashboard fully functional
+- Rental and payment history visible
+- Account settings manageable
+- Responsive on all device sizes
+- All forms validated and submitted
+
+**Team Allocation**: 2 Frontend, 1 Backend
+
+---
+
+### Phase 9: Admin Dashboard (Week 5-6)
+
+**Goals**: Build admin interface for inventory and analytics management
+
+**Frontend Tasks**:
+- [ ] Create admin layout with navigation
+- [ ] Skateboard management interface (add, edit, remove)
+- [ ] Inventory status dashboard
+- [ ] Revenue analytics charts
+- [ ] User management interface
+- [ ] Damage claim review interface
+- [ ] Report export functionality
+- [ ] System health/status page
+- [ ] Role-based access control UI
+- [ ] Admin-only route protection
+
+**Backend Tasks**:
+- [ ] Implement POST /api/admin/skateboards endpoint
+- [ ] Implement PUT /api/admin/skateboards/:id endpoint
+- [ ] Implement DELETE /api/admin/skateboards/:id endpoint
+- [ ] Implement GET /api/admin/dashboard endpoint
+- [ ] Implement analytics data aggregation
+- [ ] Implement GET /api/admin/users endpoint
+- [ ] Implement GET /api/admin/claims endpoint
+- [ ] Implement PUT /api/admin/claims/:id endpoint
+- [ ] Create report generation service
+- [ ] Implement CSV/PDF export functionality
+
+**Testing**:
+- [ ] Component tests for admin UI
+- [ ] Integration tests for admin endpoints
+- [ ] Tests for access control (non-admins blocked)
+- [ ] Analytics calculation tests
+
+**Deliverables**:
+- Admin dashboard fully functional
+- Inventory management working
+- Analytics and reporting available
+- Damage claim management UI
+- Revenue reports generating
+- User management accessible
+
+**Team Allocation**: 2 Frontend, 2 Backend
+
+---
+
+### Phase 10: Notifications & Communication (Week 6)
+
+**Goals**: Implement email and SMS notifications
+
+**Backend Tasks**:
+- [ ] Integrate email service (SendGrid or similar)
+- [ ] Integrate SMS service (Twilio or similar)
+- [ ] Create email templates
+- [ ] Implement registration confirmation email
+- [ ] Implement rental confirmation email
+- [ ] Implement late fee notification
+- [ ] Implement return confirmation email
+- [ ] Implement damage claim notification
+- [ ] Implement password reset email
+- [ ] Create email queue for async sending
+- [ ] Add SMS notifications for critical alerts
+- [ ] Create notification preference service
+
+**Testing**:
+- [ ] Unit tests for email template rendering
+- [ ] Integration tests for sending emails
+- [ ] Tests for SMS sending
+- [ ] Queue processing tests
+
+**Deliverables**:
+- Users receive email confirmations
+- Rental reminders sent before deadline
+- Late fee notifications working
+- All transactional emails functional
+- SMS notifications for critical alerts
+- Notification preferences respected
+
+**Team Allocation**: 1 Backend
+
+---
+
+### Phase 11: Testing & Quality Assurance (Week 6-7)
+
+**Goals**: Comprehensive testing across all features
+
+**Tasks**:
+- [ ] Achieve 80%+ code coverage
+- [ ] Run full test suite
+- [ ] Perform manual end-to-end testing
+- [ ] Load testing for concurrent users
+- [ ] Security testing and vulnerability scan
+- [ ] Accessibility testing (WCAG 2.1 AA)
+- [ ] Cross-browser testing
+- [ ] Mobile responsiveness testing
+- [ ] Performance testing and optimization
+- [ ] Database query optimization
+- [ ] API response time validation
+- [ ] Error handling and edge case testing
+
+**Deliverables**:
+- 80%+ code coverage achieved
+- All tests passing
+- Performance metrics validated
+- Security vulnerabilities assessed
+- Accessibility compliance verified
+- Load testing results documented
+
+**Team Allocation**: Full team
+
+---
+
+### Phase 12: Deployment & Launch (Week 7-8)
+
+**Goals**: Deploy to production and conduct soft launch
+
+**Tasks**:
+- [ ] Set up AWS/cloud infrastructure
+- [ ] Configure production database
+- [ ] Set up CI/CD for production deployment
+- [ ] Configure monitoring and alerting
+- [ ] Set up backup and disaster recovery
+- [ ] Create deployment documentation
+- [ ] Deploy to staging environment
+- [ ] Conduct staging testing
+- [ ] Deploy to production
+- [ ] Monitor system performance
+- [ ] Set up incident response procedures
+- [ ] Create runbooks for common scenarios
+- [ ] Train support team
+
+**Deliverables**:
+- Application running in production
+- Monitoring and alerting active
+- Backup systems operational
+- Documentation complete
+- Support team trained
+- Incident response procedures ready
+
+**Team Allocation**: Full team + DevOps specialist
+
+---
+
+## 4. Database Schema Details
+
+### Users Table
+```javascript
+{
+  id: INTEGER PRIMARY KEY,
+  email: VARCHAR(255) UNIQUE NOT NULL,
+  password_hash: VARCHAR(255) NOT NULL,
+  phone: VARCHAR(20),
+  first_name: VARCHAR(100),
+  last_name: VARCHAR(100),
+  address: TEXT,
+  city: VARCHAR(100),
+  zip_code: VARCHAR(20),
+  date_of_birth: DATE,
+  verified: BOOLEAN DEFAULT false,
+  verification_token: VARCHAR(255),
+  role: ENUM('customer', 'admin', 'support') DEFAULT 'customer',
+  suspended: BOOLEAN DEFAULT false,
+  created_at: TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at: TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+}
+```
+
+### Skateboards Table
+```javascript
+{
+  id: INTEGER PRIMARY KEY,
+  name: VARCHAR(255) NOT NULL,
+  type: VARCHAR(50), // street, cruiser, longboard, electric
+  brand: VARCHAR(100),
+  model: VARCHAR(100),
+  condition: VARCHAR(50), // new, good, fair, needs_repair
+  location: VARCHAR(100),
+  status: VARCHAR(50), // available, in_use, maintenance
+  price_per_hour: DECIMAL(10,2),
+  price_per_day: DECIMAL(10,2),
+  price_per_week: DECIMAL(10,2),
+  features: TEXT, // JSON array
+  image_urls: TEXT, // JSON array
+  description: TEXT,
+  created_at: TIMESTAMP,
+  updated_at: TIMESTAMP
+}
+```
+
+### Rentals Table
+```javascript
+{
+  id: INTEGER PRIMARY KEY,
+  user_id: INTEGER FOREIGN KEY (users.id),
+  skateboard_id: INTEGER FOREIGN KEY (skateboards.id),
+  pickup_datetime: TIMESTAMP NOT NULL,
+  planned_return_datetime: TIMESTAMP NOT NULL,
+  actual_return_datetime: TIMESTAMP,
+  pickup_location: VARCHAR(255),
+  return_location: VARCHAR(255),
+  pickup_condition: VARCHAR(50),
+  return_condition: VARCHAR(50),
+  status: VARCHAR(50), // pending, active, returned, cancelled
+  rental_price: DECIMAL(10,2),
+  late_fee: DECIMAL(10,2) DEFAULT 0,
+  damage_charge: DECIMAL(10,2) DEFAULT 0,
+  total_price: DECIMAL(10,2),
+  qr_code: VARCHAR(255) UNIQUE,
+  notes: TEXT,
+  created_at: TIMESTAMP,
+  updated_at: TIMESTAMP
+}
+```
+
+### Payments Table
+```javascript
+{
+  id: INTEGER PRIMARY KEY,
+  rental_id: INTEGER FOREIGN KEY (rentals.id),
+  user_id: INTEGER FOREIGN KEY (users.id),
+  amount: DECIMAL(10,2) NOT NULL,
+  payment_method: VARCHAR(50), // card, apple_pay, google_pay, paypal
+  status: VARCHAR(50), // pending, completed, failed, refunded
+  transaction_id: VARCHAR(255) UNIQUE,
+  stripe_payment_id: VARCHAR(255),
+  refund_amount: DECIMAL(10,2) DEFAULT 0,
+  refund_transaction_id: VARCHAR(255),
+  created_at: TIMESTAMP,
+  updated_at: TIMESTAMP
+}
+```
+
+### DamageClaims Table
+```javascript
+{
+  id: INTEGER PRIMARY KEY,
+  rental_id: INTEGER FOREIGN KEY (rentals.id),
+  user_id: INTEGER FOREIGN KEY (users.id),
+  description: TEXT NOT NULL,
+  severity: VARCHAR(50), // minor, moderate, major
+  repair_cost: DECIMAL(10,2),
+  photo_urls: TEXT, // JSON array
+  status: VARCHAR(50), // reported, under_review, resolved, appealed
+  resolution: TEXT,
+  appealed: BOOLEAN DEFAULT false,
+  appeal_reason: TEXT,
+  appeal_status: VARCHAR(50), // pending, approved, rejected
+  created_at: TIMESTAMP,
+  updated_at: TIMESTAMP
+}
+```
+
+---
+
+## 5. API Design Details
+
+### Authentication Endpoints
+```
+POST /api/auth/register
+Body: { email, password, confirmPassword, phone, firstName, lastName }
+Response: { success, message, user, token }
+
+POST /api/auth/login
+Body: { email, password }
+Response: { success, token, refreshToken, user }
+
+POST /api/auth/refresh
+Body: { refreshToken }
+Response: { success, token }
+
+POST /api/auth/logout
+Response: { success }
+
+POST /api/auth/password-reset
+Body: { email }
+Response: { success, message }
+
+PUT /api/auth/password-reset/:token
+Body: { password, confirmPassword }
+Response: { success, message }
+```
+
+### Skateboard Endpoints
+```
+GET /api/skateboards?type=street&minPrice=0&maxPrice=50&page=1&limit=10&sortBy=price
+Response: { data: [skateboard], total, page, limit }
+
+GET /api/skateboards/:id
+Response: { data: skateboard }
+
+POST /api/skateboards (admin only)
+Body: { name, type, brand, model, price_per_hour, features, image_urls }
+Response: { success, data: skateboard }
+
+PUT /api/skateboards/:id (admin only)
+Body: { condition, status, location, ... }
+Response: { success, data: skateboard }
+
+DELETE /api/skateboards/:id (admin only)
+Response: { success }
+```
+
+### Rental Endpoints
+```
+POST /api/rentals
+Body: { skateboardId, pickupDatetime, returnDatetime, pickupLocation, returnLocation }
+Response: { success, data: rental, qrCode }
+
+GET /api/rentals
+Response: { data: [rental], total }
+
+GET /api/rentals/:id
+Response: { data: rental }
+
+PUT /api/rentals/:id/checkin
+Body: { conditionAssessment, location }
+Response: { success, data: rental }
+
+PUT /api/rentals/:id/checkout
+Body: { conditionAssessment, photos, notes }
+Response: { success, data: rental }
+
+PUT /api/rentals/:id/return
+Body: { conditionAssessment, photos, damageSeverity }
+Response: { success, data: rental, invoice }
+
+DELETE /api/rentals/:id (cancellation)
+Response: { success, refundAmount }
+```
+
+### Payment Endpoints
+```
+POST /api/payments
+Body: { rentalId, amount, paymentMethodId, token }
+Response: { success, transactionId, receipt }
+
+GET /api/payments/:id
+Response: { data: payment }
+
+POST /api/payments/:id/refund
+Response: { success, refundAmount, transactionId }
+```
+
+### Admin Endpoints
+```
+GET /api/admin/dashboard
+Response: { revenue, rentals, activeUsers, damageRate, topSkateboards }
+
+GET /api/admin/reports?type=revenue&startDate=&endDate=&format=json
+Response: { data: reportData }
+
+GET /api/admin/users?suspended=false&page=1&limit=20
+Response: { data: [user], total }
+
+GET /api/admin/claims?status=under_review&page=1&limit=20
+Response: { data: [claim], total }
+
+PUT /api/admin/claims/:id
+Body: { status, resolution, amount }
+Response: { success, data: claim }
+
+PUT /api/admin/users/:id/suspend
+Response: { success }
+
+PUT /api/admin/users/:id/unsuspend
+Response: { success }
+```
+
+---
+
+## 6. Frontend Architecture
+
+### Component Hierarchy
+```
+App
+├── Navigation
+├── Routes
+│   ├── LoginPage
+│   │   └── AuthForm
+│   ├── RegisterPage
+│   │   └── AuthForm
+│   ├── SearchPage
+│   │   ├── SearchBar
+│   │   ├── FilterPanel
+│   │   └── SkateboardGrid
+│   │       └── SkateboardCard
+│   ├── RentalDetailPage
+│   │   ├── SkateboardDetails
+│   │   └── BookingForm
+│   ├── CheckoutPage
+│   │   ├── OrderSummary
+│   │   └── PaymentForm
+│   ├── DashboardPage
+│   │   ├── ActiveRentals
+│   │   ├── RentalHistory
+│   │   ├── AccountSettings
+│   │   └── PaymentMethods
+│   └── AdminDashboard (protected)
+│       ├── AnalyticsDashboard
+│       ├── InventoryManager
+│       ├── UserManager
+│       └── ClaimManager
+└── Footer
+```
+
+### State Management Strategy (Zustand)
+- `authStore`: User authentication state, JWT token, user info
+- `rentalStore`: Current rental, rental history, booking state
+- `skateboardStore`: Skateboard list, filters, selected skateboard
+- `uiStore`: Modal state, notifications, loading states, theme
+
+### API Service Layer Pattern
+```javascript
+// Example: authService.js
+export const authService = {
+  register: (email, password) => axios.post('/api/auth/register', {...}),
+  login: (email, password) => axios.post('/api/auth/login', {...}),
+  logout: () => axios.post('/api/auth/logout'),
+  refreshToken: (token) => axios.post('/api/auth/refresh', {...})
+};
+```
+
+---
+
+## 7. Backend Architecture
+
+### Middleware Order
+```javascript
+app.use(helmet()); // Security headers
+app.use(cors()); // CORS
+app.use(morgan('combined')); // Logging
+app.use(express.json()); // Body parsing
+app.use(express.static('public')); // Static files
+app.use(authMiddleware); // JWT validation (conditionally)
+app.use(errorHandler); // Error handling
+```
+
+### Service Layer Pattern
+Services handle business logic separate from controllers:
+- `authService`: User registration, login, password hashing
+- `skateboardService`: Availability checking, inventory management
+- `rentalService`: Booking, pricing, status management
+- `paymentService`: Stripe integration, refunds
+- `emailService`: Email sending via SendGrid
+- `drivingService`: SMS sending via Twilio
+
+### Error Handling Strategy
+```javascript
+// Custom error class
+class AppError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.statusCode = statusCode;
+  }
+}
+
+// Error handler middleware catches all errors
+app.use((err, req, res, next) => {
+  res.status(err.statusCode || 500).json({
+    success: false,
+    message: err.message,
+    errors: err.errors || []
+  });
+});
+```
+
+---
+
+## 8. Development Workflow
+
+### Git Workflow
+- **Main branch**: Production-ready code only
+- **Develop branch**: Integration branch for features
+- **Feature branches**: `feature/feature-name` for new features
+- **Bugfix branches**: `bugfix/bug-name` for bug fixes
+- **Pull requests**: Code review required before merge
+
+### Pull Request Process
+1. Create feature branch from `develop`
+2. Commit code with clear messages
+3. Open PR with feature description
+4. CI/CD tests must pass
+5. Code review by at least 1 team member
+6. Approval required to merge
+7. Auto-merge to `develop`
+
+### Commit Message Format
+```
+type(scope): subject (max 50 chars)
+
+Body explaining reasoning (max 72 chars/line)
+
+Fixes #123
+```
+
+Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+
+---
+
+## 9. Testing Strategy
+
+### Unit Tests
+- Service functions (business logic)
+- Utility functions
+- Model validations
+- React hooks
+- Target: 80%+ coverage
+
+### Integration Tests
+- API endpoints with database
+- Authentication flow
+- Payment processing
+- Email sending
+- Target: Critical paths covered
+
+### Component Tests
+- React components with React Testing Library
+- User interactions
+- Form submissions
+- Error states
+- Target: 80%+ coverage
+
+### End-to-End Tests
+- Selenium/Cypress for critical user flows
+- Browser compatibility testing
+- Mobile responsiveness verification
+
+### Example Test Structure
+```javascript
+// __tests__/services/authService.test.js
+describe('authService', () => {
+  describe('login', () => {
+    it('should return token for valid credentials', async () => {
+      const result = await authService.login('user@email.com', 'password123');
+      expect(result.token).toBeDefined();
+    });
+    
+    it('should throw error for invalid credentials', async () => {
+      await expect(
+        authService.login('user@email.com', 'wrong')
+      ).rejects.toThrow('Invalid credentials');
+    });
+  });
+});
+```
+
+---
+
+## 10. Performance Optimization
+
+### Frontend
+- Code splitting with React.lazy()
+- Image optimization (WebP format, responsive sizes)
+- Lazy loading for skateboard images
+- Caching with React Query
+- Production builds with tree-shaking
+- Minification and compression
+- Target: < 3s load time on 4G
+
+### Backend
+- Database indexing on frequently queried fields
+- Connection pooling (max 50 connections)
+- Query optimization and N+1 prevention
+- Caching with Redis (5-min TTL for listings)
+- Pagination on large result sets
+- Async email/SMS queues
+- Target: < 500ms API response time
+
+### Database
+- Indexes on: user_id, skateboard_id, created_at, status
+- Full-text search index on skateboard name/description
+- Partitioning for large tables (by date if needed)
+- Regular ANALYZE and VACUUM
+
+---
+
+## 11. Security Implementation
+
+### Authentication
+- JWT tokens with 24-hour expiration
+- Refresh tokens with 7-day expiration
+- Password hashing with bcrypt (12 rounds)
+- Email verification on signup
+
+### API Security
+- HTTPS/TLS 1.2+ required
+- CORS configuration (whitelist domains)
+- Rate limiting: 20 req/min for auth, 100 req/min for general
+- CSRF token validation
+- Input validation on all endpoints
+- SQL injection prevention (Sequelize parameterization)
+
+### Data Protection
+- Password reset tokens expire in 1 hour
+- Encryption at rest for sensitive data
+- Payment data never stored (PCI compliance)
+- Regular dependency updates and security audits
+- Helmet.js for security headers
+
+### GDPR Compliance
+- User data export endpoint
+- Account deletion with data anonymization
+- Data retention policy: 7 years for disputes, 1 year for inactive users
+- Privacy policy and consent management
+
+---
+
+## 12. Deployment Pipeline
+
+### Environments
+1. **Local**: Docker Compose with mock services
+2. **Development**: Deployed to AWS for testing
+3. **Staging**: Production-like environment for QA
+4. **Production**: Live environment with users
+
+### CI/CD Pipeline (GitHub Actions)
+```yaml
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - run: npm install
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+  deploy-staging:
+    needs: test
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: docker build -t app:latest .
+      - run: aws ecr push app:latest
+
+  deploy-production:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: docker build -t app:v${{ github.run_number }} .
+      - run: aws ecr push app:v${{ github.run_number }}
+      - run: kubectl set image deployment/app app=app:v${{ github.run_number }}
+```
+
+---
+
+## 13. Infrastructure & DevOps
+
+### AWS Services
+- **EC2/ECS**: Application servers (auto-scaling)
+- **RDS**: PostgreSQL database (multi-AZ)
+- **ElastiCache**: Redis for caching
+- **S3**: Image and backup storage
+- **CloudFront**: CDN for static assets
+- **Route53**: DNS management
+- **CloudWatch**: Logging and monitoring
+- **RDS**: Automated backups (daily)
+
+### Monitoring & Logging
+- CloudWatch for logs and metrics
+- DataDog or New Relic for APM
+- Sentry for error tracking
+- Uptime monitoring with 99.9% SLA target
+- Alert thresholds: CPU >80%, Memory >85%, Error rate >1%
+
+### Backup & Disaster Recovery
+- Daily automated DB backups (30-day retention)
+- Cross-region backup replication
+- RTO: 4 hours, RPO: 1 hour
+- Annual disaster recovery drill
+
+---
+
+## 14. Team Structure & Responsibilities
+
+### Frontend Team (2 developers)
+- UI/UX implementation in React
+- Component architecture and state management
+- Form validation and error handling
+- Mobile responsiveness
+- Performance optimization
+- Integration testing
+
+### Backend Team (2 developers)
+- API design and implementation
+- Database schema and migrations
+- Business logic in services
+- Authentication and authorization
+- Payment integration
+- Email/SMS notifications
+- Unit and integration testing
+
+### DevOps/Infrastructure (1 specialist)
+- AWS infrastructure setup
+- Docker containerization
+- CI/CD pipeline creation
+- Database administration
+- Monitoring and alerting
+- Security hardening
+- Backup and disaster recovery
+
+### Project Manager (1)
+- Feature prioritization
+- Sprint planning
+- Risk management
+- Stakeholder communication
+- Progress tracking
+- Release management
+
+---
+
+## 15. Risk Management
+
+### High-Risk Items
+1. **Payment Processing**: Integration with Stripe must be perfect
+   - Mitigation: Use test environment extensively, hire Stripe expert
+   
+2. **Database Performance**: Large dataset queries could be slow
+   - Mitigation: Proper indexing, caching strategy, load testing
+   
+3. **Real-time Availability**: Concurrent users booking same skateboard
+   - Mitigation: Database locking, Redis caching, optimistic concurrency control
+
+4. **Data Loss**: Database corruption or backup failure
+   - Mitigation: Multi-AZ deployment, regular backup testing, disaster recovery drills
+
+### Medium-Risk Items
+- Third-party API downtime (Stripe, SendGrid, Twilio)
+- Security vulnerabilities in dependencies
+- Scalability under high load
+- Frontend/backend version mismatch
+
+### Risk Mitigation Strategies
+- Redundant payment gateway options
+- Regular dependency updates and security scans
+- Load testing before production launch
+- Comprehensive API versioning
+- Feature flags for gradual rollout
+
+---
+
+## 16. Success Metrics
+
+### Development Metrics
+- 80%+ test coverage
+- Zero high-severity vulnerabilities
+- 95%+ deployment success rate
+- < 2 minutes average build time
+- < 500ms API response time (95th percentile)
+
+### User Metrics
+- 95% successful checkout completion
+- < 3 second page load time
+- 4.5+ star average rating
+- 90+ Lighthouse score
+- WCAG 2.1 AA compliance verified
+
+### Business Metrics
+- 99.9% uptime SLA
+- < 2% damage rate on rentals
+- < 5% late return rate
+- > $X monthly revenue (from clarifications)
+- User acquisition target: X new users/week
+
+---
+
+## 17. Documentation & Knowledge Transfer
+
+### Documentation to Create
+- API Documentation (OpenAPI/Swagger)
+- Database schema documentation
+- Architecture Decision Records (ADRs)
+- Deployment runbooks
+- Development setup guide
+- Troubleshooting guide
+- Security best practices guide
+- API client library (optional)
+
+### Documentation Tools
+- README.md in each directory
+- Swagger UI for API docs
+- Gitbook or Wiki for architecture
+- Comments in complex code sections
+- Regular documentation reviews
+
+---
+
+## 18. Timeline Summary
+
+| Week | Phase | Deliverables |
+|------|-------|--------------|
+| 1 | Foundation | Dev environment, DB schema, project structure |
+| 1-2 | Auth | Registration, login, JWT tokens |
+| 2 | Inventory | Search, filters, skateboard listings |
+| 3 | Bookings | Rental booking, pricing, QR codes |
+| 3-4 | Payments | Stripe integration, payment processing |
+| 4 | Check-in/Out | QR scanning, condition assessment |
+| 4-5 | Returns | Return workflow, damage claims, disputes |
+| 5 | User Dashboard | Profile, history, settings |
+| 5-6 | Admin Dashboard | Analytics, inventory, claim management |
+| 6 | Notifications | Email/SMS, confirmations, reminders |
+| 6-7 | QA Testing | 80% coverage, security, performance |
+| 7-8 | Deployment | Production launch, monitoring, soft launch |
+
+---
+
+## 19. Assumptions & Constraints
+
+### Technical Assumptions
+- React 18+ available and stable
+- Node.js 18 LTS available in production
+- PostgreSQL 14+ available in production
+- Stripe API available and stable
+- SendGrid/Twilio APIs available
+
+### Resource Assumptions
+- 5-person team available full-time
+- 8-week development timeline realistic
+- Budget available for AWS infrastructure
+- Licenses for development tools available
+
+### Business Assumptions
+- Single location launch
+- Skateboard inventory < 500 units
+- Expected users: 10,000+ concurrent capacity
+- Peak traffic: 20 requests/second
+
+---
+
+## 20. Next Steps
+
+1. **Week 0 (Before Development)**
+   - [ ] Finalize all clarifications from speckit.clarify
+   - [ ] Obtain stakeholder approval
+   - [ ] Recruit team members
+   - [ ] Set up development environment
+   - [ ] Create GitHub repository
+   - [ ] Establish communication channels
+
+2. **Ongoing During Development**
+   - [ ] Weekly sprint reviews
+   - [ ] Bi-weekly stakeholder updates
+   - [ ] Daily standup meetings
+   - [ ] Risk monitoring
+   - [ ] Performance metric tracking
+
+3. **Pre-Launch**
+   - [ ] Security audit and penetration testing
+   - [ ] Performance load testing
+   - [ ] User acceptance testing with stakeholders
+   - [ ] Support team training
+   - [ ] Marketing/launch preparation

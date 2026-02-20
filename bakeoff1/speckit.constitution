@@ -1,0 +1,31 @@
+# SpecKit Constitution
+
+## Core Principles
+
+### Code Quality
+- **Maintainability**: Code must be clear, well-documented, and follow established conventions
+- **Consistency**: All code follows standardized formatting, naming conventions, and architectural patterns
+- **Testability**: Code is structured to be easily testable with minimal external dependencies
+- **No Technical Debt**: Each commit reduces or maintains current debt levels; no intentional shortcuts
+- **Standards Compliance**: Adherence to language-specific best practices and style guides
+
+### Testing Standards
+- **Comprehensive Coverage**: Minimum 80% code coverage for critical paths
+- **Test Types**: Unit tests, integration tests, and end-to-end tests for all features
+- **Automated Validation**: All tests must run automatically in CI/CD pipeline
+- **Test Maintenance**: Tests are treated as first-class code and maintained alongside implementation
+- **Performance Testing**: Load and stress tests validate system behavior under expected conditions
+
+### User Experience Consistency
+- **Unified Design System**: All user-facing elements follow documented design patterns and component library
+- **Accessibility**: WCAG 2.1 AA compliance as minimum standard across all interfaces
+- **Responsive Design**: Consistent experience across all device sizes and breakpoints
+- **Clear Communication**: Error messages, status indicators, and feedback are contextual and actionable
+- **Intuitive Navigation**: User flows are predictable and minimize cognitive load
+
+### Performance Requirements
+- **Load Time Targets**: Initial page load under 3 seconds on standard connections
+- **Interactive Performance**: First Contentful Paint (FCP) under 1.8 seconds
+- **Runtime Performance**: No tasks blocking user input for longer than 100ms
+- **Resource Optimization**: Minimize bundle sizes, optimize images, lazy-load non-critical content
+- **Monitoring**: Continuous performance metrics tracked and reviewed during development

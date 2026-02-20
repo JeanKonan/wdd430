@@ -1,0 +1,411 @@
+# Skateboard Rental Web Application - Project Specification
+
+## 1. Project Overview
+
+### 1.1 Purpose
+Design and develop a web-based skateboard rental platform that enables users to browse available skateboards, reserve them for specific time periods, complete rentals, and return equipment. The system manages inventory, user accounts, rental transactions, and return processing.
+
+### 1.2 Goals
+- Provide a seamless user experience for booking and returning skateboards
+- Manage skateboard inventory and availability in real-time
+- Track rental history and user statistics
+- Generate revenue reports and operational insights
+- Minimize skateboard losses and damage through tracking
+
+### 1.3 Target Users
+- Casual riders seeking short-term skateboard access
+- Skateboard enthusiasts testing different equipment
+- Tourists in urban areas
+- Riders without personal equipment
+
+---
+
+## 2. User Roles and Personas
+
+### 2.1 Customer
+- **Description**: Primary user renting skateboards
+- **Goals**: Find, rent, and return skateboards with minimal friction
+- **Technical Level**: General public
+
+### 2.2 Admin
+- **Description**: System operator managing inventory and disputes
+- **Goals**: Monitor system health, manage inventory, resolve issues
+- **Technical Level**: Intermediate
+
+### 2.3 Support Staff
+- **Description**: Handles customer inquiries and damage claims
+- **Goals**: Resolve customer issues, process returns, manage complaints
+- **Technical Level**: Intermediate
+
+---
+
+## 3. Core Features
+
+### 3.1 User Management
+- User registration with email verification
+- Profile creation (name, phone, address, payment method)
+- Password reset and account recovery
+- User authentication (JWT tokens with 24-hour expiration)
+- Account suspension and reactivation
+
+### 3.2 Skateboard Inventory
+- Add/edit skateboard details (brand, model, condition, features)
+- Track skateboard location (rental center, in-use, maintenance)
+- Condition assessment (new, good, fair, needs repair)
+- Categorize by type (street, cruiser, longboard, electric)
+- Upload skateboard images and specifications
+
+### 3.3 Rental Management
+- Search and filter available skateboards by type, features, location
+- Reserve skateboard for specific date and time range
+- Checkout process with rental agreement acceptance
+- Dynamic pricing based on duration and demand
+- Support for hourly, daily, and weekly rental periods
+- Automatic rental expiration notifications
+- Late return penalties calculation
+
+### 3.4 Return Processing
+- Return check-in at designated locations
+- Condition assessment at return
+- Damage documentation with photo evidence
+- Return location flexibility (same/different location option)
+- Automatic deposit refund for undamaged returns
+- Damage claim processing workflow
+
+### 3.5 Payment Processing
+- Support credit/debit card payments
+- Digital wallet integration (PayPal, Apple Pay, Google Pay)
+- Security deposit requirement (refundable)
+- Rental fee calculation and invoicing
+- Damage charge processing
+- Late fee calculation and charging
+- Payment receipt generation and email delivery
+
+### 3.6 User Dashboard
+- Rental history with filtering and search
+- Active rental status and countdown timer
+- Upcoming reservations
+- Account settings and payment methods
+- Damage claim history
+- Rating and review submission for rentals
+
+### 3.7 Admin Dashboard
+- Real-time inventory status
+- Rental and revenue analytics
+- User management and account moderation
+- Damage claim review and resolution
+- System health monitoring
+- Report generation (daily, weekly, monthly)
+
+---
+
+## 4. User Stories with Acceptance Criteria
+
+### 4.1 User Registration
+**Story**: As a new user, I want to register an account so I can rent skateboards
+
+**Acceptance Criteria**:
+- User can enter email, password, and confirm password
+- System validates email format and password strength (min 8 chars, 1 uppercase, 1 number, 1 special char)
+- Email verification link sent within 60 seconds
+- Account created after email verification
+- Error messages displayed for invalid input
+- Registration completes in under 2 minutes total
+- Success message confirms account creation
+
+### 4.2 Skateboard Search
+**Story**: As a customer, I want to search and filter available skateboards so I can find the right one for my needs
+
+**Acceptance Criteria**:
+- Filter by skateboard type, features, rental period, location
+- Results show in under 500ms
+- Search results display with images, features, price, and availability
+- Can sort by price (low-to-high, high-to-low), newest, rating
+- Real-time availability status displayed
+- Show 10 results per page with pagination
+- Mobile-responsive layout
+
+### 4.3 Rental Booking
+**Story**: As a customer, I want to book a skateboard for a specific time period so I can use it when I need it
+
+**Acceptance Criteria**:
+- Select date and time for pickup and return
+- System prevents booking past return dates
+- Dynamic price calculation displayed before confirmation
+- Rental agreement summary shown for review
+- One-click acceptance of rental agreement
+- Confirmation email sent with rental details and pickup instructions
+- Booking confirmation contains QR code for check-in
+- Payment captured immediately upon confirmation
+- Booking reference provided for check-in
+
+### 4.4 Skateboard Check-in
+**Story**: As a customer, I want to check out my rented skateboard so I can start using it
+
+**Acceptance Criteria**:
+- QR code scan or manual code entry enables check-in
+- Identity verification required (last 4 of phone or ID)
+- Condition assessment form presented before release
+- Customer confirms received condition matches listed condition
+- Rental countdown timer starts
+- Return location and deadline clearly displayed
+- SMS reminder sent at checkout with return deadline
+
+### 4.5 Skateboard Return
+**Story**: As a customer, I want to return my skateboard so I can end the rental
+
+**Acceptance Criteria**:
+- Return at any designated location during operating hours
+- QR code scan initiates return process
+- Condition assessment performed by staff
+- Photos taken if damage detected
+- Damage charges calculated and displayed immediately
+- Deposit refund processed within 24 hours for undamaged returns
+- Return receipt emailed with final charges
+- Rental completion recorded in history
+
+### 4.6 Late Return Handling
+**Story**: As a customer renting beyond the agreed time, I want to be notified and charged appropriately
+
+**Acceptance Criteria**:
+- SMS/email reminder at 1 hour before deadline
+- Late fees applied at $5 per hour after deadline
+- Maximum daily late fee capped at 50% of daily rental cost
+- Grace period of 15 minutes before fees apply
+- Customer notified of accumulated charges
+- Charges applied at return check-in
+- Invoice shows itemized breakdown
+
+### 4.7 Damage Claim Processing
+**Story**: As support staff, I want to document and process damage claims so disputes are resolved fairly
+
+**Acceptance Criteria**:
+- Damage photos and description captured at return
+- Damage severity assessed (minor, moderate, major)
+- Repair/replacement cost estimated
+- Customer notified within 24 hours of claim
+- Appeals process available for 7 days
+- Funds deducted from deposit or charged to payment method
+- Claim resolution documented in system
+- Closed claims archived with full documentation
+
+### 4.8 Admin Analytics Dashboard
+**Story**: As an admin, I want to view system analytics so I can understand business performance
+
+**Acceptance Criteria**:
+- Dashboard loads within 2 seconds
+- Display total revenue, rentals, and active users (current period)
+- Charts show revenue trends (daily, weekly, monthly options)
+- Equipment utilization rates by skateboard type
+- Top-rented locations identified
+- Damage rate analysis with top damaged models
+- User growth metrics
+- Peak rental times identified
+- Export reports as PDF or CSV
+
+---
+
+## 5. Technical Requirements
+
+### 5.1 Architecture
+- **Frontend**: React 18+ with JavaScript
+- **Backend**: Node.js/Express
+- **Database**: PostgreSQL for relational data (users, rentals, payments)
+- **Cache**: Redis for session management and real-time availability
+- **Storage**: AWS S3 or equivalent for images
+- **Authentication**: JWT with refresh tokens
+- **API Documentation**: OpenAPI 3.0 specification
+
+### 5.2 Database Schema
+
+**Users Table**
+- user_id (PK), email, password_hash, phone, address, verified, created_at
+
+**Skateboards Table**
+- skateboard_id (PK), name, type, brand, model, condition, location, price_per_hour, price_per_day, status, features, image_url
+
+**Rentals Table**
+- rental_id (PK), user_id (FK), skateboard_id (FK), pickup_datetime, return_datetime, actual_return_datetime, pickup_location, return_location, status, total_price, damage_reported
+
+**Payments Table**
+- payment_id (PK), rental_id (FK), amount, payment_method, status, transaction_id, created_at
+
+**DamageClaims Table**
+- claim_id (PK), rental_id (FK), description, severity, repair_cost, resolution_status, resolved_at
+
+### 5.3 API Endpoints
+
+**Authentication**
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `POST /api/auth/refresh` - Refresh JWT token
+- `POST /api/auth/logout` - User logout
+
+**Skateboards**
+- `GET /api/skateboards` - List available skateboards with filters
+- `GET /api/skateboards/:id` - Get skateboard details
+- `POST /api/skateboards` - Create skateboard (admin only)
+- `PUT /api/skateboards/:id` - Update skateboard (admin only)
+
+**Rentals**
+- `GET /api/rentals` - User's rental history
+- `POST /api/rentals` - Create rental reservation
+- `GET /api/rentals/:id` - Get rental details
+- `PUT /api/rentals/:id/checkin` - Check in skateboard
+- `PUT /api/rentals/:id/checkout` - Check out skateboard
+- `PUT /api/rentals/:id/return` - Return skateboard
+
+**Payments**
+- `POST /api/payments` - Process payment
+- `GET /api/payments/:id` - Get payment details
+
+**Admin**
+- `GET /api/admin/dashboard` - Dashboard metrics
+- `GET /api/admin/reports` - Generate reports
+- `GET /api/admin/claims` - List damage claims
+- `PUT /api/admin/claims/:id` - Resolve damage claim
+
+### 5.4 Security Requirements
+- HTTPS/TLS 1.2+ encryption for all traffic
+- Password hashing with bcrypt (min 12 rounds)
+- SQL injection prevention via parameterized queries
+- CSRF token validation on all state-changing endpoints
+- Rate limiting (20 requests/minute per IP for auth endpoints)
+- PCI DSS compliance for payment processing
+- Data encryption at rest for sensitive information
+- Regular security audits and dependency updates
+- GDPR compliant data handling and deletion policies
+
+### 5.5 Performance Requirements
+- Page load time: < 3 seconds on 4G
+- API response time: < 500ms for 95th percentile
+- Database query time: < 200ms for standard queries
+- Concurrent users supported: 10,000+ concurrent
+- Search functionality: < 100ms response time
+- Image optimization: max 100KB per image after compression
+- Caching strategy: 5-minute cache for skateboard listings, 1-hour for user data
+
+### 5.6 Scalability
+- Horizontal scaling for Node.js application servers
+- Read replicas for database scaling
+- CDN for static assets and image delivery
+- Database connection pooling (min 10, max 50 connections)
+- Async job queue for email notifications and report generation
+- Load balancing with health checks
+
+---
+
+## 6. User Experience Requirements
+
+### 6.1 Design System
+- Color palette: Primary blue (#0066CC), secondary green (#00AA44), neutral grays
+- Typography: System font stack (SF Pro, Segoe UI, Roboto)
+- Spacing: 8px base unit
+- Component library: Reusable buttons, cards, forms, modals
+- Dark mode support
+
+### 6.2 Accessibility (WCAG 2.1 AA)
+- Color contrast ratio minimum 4.5:1 for text
+- Keyboard navigation for all interactive elements
+- Screen reader support with ARIA labels
+- Form validation with clear error messages
+- Focus indicators visible on all interactive elements
+- Alt text for all images
+
+### 6.3 Mobile-First Design
+- Responsive breakpoints: 320px, 768px, 1024px, 1440px
+- Touch-friendly buttons (min 44x44px)
+- Mobile navigation with hamburger menu
+- Forms optimized for mobile input (large fields, mobile keyboards)
+- Bottom sheet for actions on mobile
+
+### 6.4 Key User Flows
+1. **Signup → Search → Book → Checkout → Rental**
+2. **View Dashboard → Check Active Rental → Location Directions → Check In**
+3. **Receive Return Notification → Return at Location → Check Condition → Confirm**
+
+---
+
+## 7. Data and Analytics
+
+### 7.1 Events Tracked
+- User registrations and logins
+- Skateboard searches and views
+- Rental bookings and cancellations
+- Check-ins and check-outs
+- Returns and damages
+- Payment completions
+- Support interactions
+
+### 7.2 Metrics to Monitor
+- Total active users (daily/monthly)
+- Rental volume and revenue
+- Equipment utilization rate
+- Average rental duration
+- Damage rate and most damaged models
+- Customer satisfaction (NPS and reviews)
+- System uptime and performance
+
+---
+
+## 8. Deployment and Infrastructure
+
+### 8.1 Hosting
+- AWS or equivalent cloud provider
+- Application servers in auto-scaling group
+- PostgreSQL RDS with multi-AZ deployment
+- Redis ElastiCache for session storage
+- CloudFront CDN for static assets
+- S3 for image storage
+
+### 8.2 CI/CD Pipeline
+- GitHub Actions or GitLab CI for automated testing
+- Run linting, unit tests, and integration tests on every commit
+- Build Docker images for containerized deployment
+- Deploy to staging on PR, production on merge to main
+- Automated rollback on failed health checks
+
+### 8.3 Monitoring and Logging
+- Application logs to CloudWatch or ELK stack
+- Performance monitoring with New Relic or DataDog
+- Error tracking with Sentry
+- Uptime monitoring with 99.9% SLA target
+- Daily backup to separate storage
+
+---
+
+## 9. Timeline and Milestones
+
+### Phase 1: MVP (Weeks 1-4)
+- User registration and authentication
+- Skateboard listing and search
+- Rental booking and payment processing
+- Basic return workflow
+
+### Phase 2: Enhancement (Weeks 5-6)
+- Check-in/check-out with QR codes
+- Damage claim processing
+- User dashboard and history
+- Admin basic dashboard
+
+### Phase 3: Polish (Weeks 7-8)
+- Performance optimization
+- Mobile responsiveness refinement
+- Security hardening
+- Comprehensive testing and bug fixes
+- Documentation completion
+
+---
+
+## 10. Success Criteria
+
+- All core features implemented and tested
+- 90% automated test coverage
+- Page load time under 3 seconds
+- Mobile usability score 90+
+- WCAG 2.1 AA compliance verified
+- Zero high-severity security vulnerabilities
+- 99.9% uptime during operation
+- User satisfaction score 4.5+ out of 5
+- 95% checkout completion rate
+- Less than 2% damage rate on rentals
