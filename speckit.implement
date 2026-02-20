@@ -885,9 +885,9 @@ When you're ready to continue, you'll learn:
 - Testing endpoints with Postman/Thunder Client
 
 **Before continuing:**
-- [ ] Make sure both servers are still running
-- [ ] Verify database tables exist
-- [ ] Commit your code to Git:
+- [X] Make sure both servers are still running
+- [X] Verify database tables exist
+- [X] Commit your code to Git:
 ```powershell
 git add .
 git commit -m "Phase 2 complete: Database models and tables created"
