@@ -803,10 +803,10 @@ You should see:
 ```
 
 **Your task:**
-- [ ] Create syncDatabase.js
-- [ ] Run it
-- [ ] Verify tables created in PostgreSQL
-- [ ] Celebrate! 🎉 You created your database!
+- [X] Create syncDatabase.js
+- [X] Run it
+- [X] Verify tables created in PostgreSQL
+- [X] Celebrate! 🎉 You created your database!
 
 ---
 
