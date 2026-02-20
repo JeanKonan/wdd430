@@ -40,8 +40,8 @@ Build a working prototype in 2-3 weeks that you can demo to your class
 4. **VS Code** (you already have this!)
 
 **Your task:**
-- [ ] Verify all tools are installed
-- [ ] Create a GitHub account if you don't have one
+- [X] Verify all tools are installed
+- [X] Create a GitHub account if you don't have one
 
 ---
 
@@ -75,8 +75,8 @@ skateboard-rental/
 ```
 
 **Your task:**
-- [ ] Create the folder structure above
-- [ ] Verify you're in the skateboard-rental directory
+- [X] Create the folder structure above
+- [X] Verify you're in the skateboard-rental directory
 
 ---
 
@@ -130,8 +130,8 @@ New-Item .gitignore
 ```
 
 **Your task:**
-- [ ] Run all commands above
-- [ ] Verify you have a `node_modules` folder and `package.json`
+- [X] Run all commands above
+- [X] Verify you have a `node_modules` folder and `package.json`
 - [ ] Take a screenshot of your folder structure
 
 ---
@@ -178,9 +178,9 @@ Find the `"scripts"` section and change it to:
 ```
 
 **Your task:**
-- [ ] Create and configure all three files
-- [ ] Test: Run `npm run dev` - it should fail (we haven't written server.js yet)
-- [ ] That's expected! Move to next step
+- [X] Create and configure all three files
+- [X] Test: Run `npm run dev` - it should fail (we haven't written server.js yet)
+- [X] That's expected! Move to next step
 
 ---
 
@@ -216,9 +216,9 @@ CREATE DATABASE skateboard_rental;
 ```
 
 **Your task:**
-- [ ] Create the database
-- [ ] Verify you can connect to it
-- [ ] Exit back to PowerShell
+- [X] Create the database
+- [X] Verify you can connect to it
+- [X] Exit back to PowerShell
 
 ---
 
@@ -287,10 +287,10 @@ npm run dev
 - You should see: `{"status":"ok","message":"Server is running!"}`
 
 **Your task:**
-- [ ] Create both files
-- [ ] Start the server
-- [ ] Test the health endpoint
-- [ ] See the success message in browser
+- [X] Create both files
+- [X] Start the server
+- [X] Test the health endpoint
+- [X] See the success message in browser
 - [ ] Take a screenshot!
 
 ---
@@ -340,11 +340,11 @@ npm run dev
 - Click the counter button - it should work!
 
 **Your task:**
-- [ ] Create React app
-- [ ] Install packages
-- [ ] Start dev server
-- [ ] See Vite welcome page in browser
-- [ ] Now you have TWO servers running:
+- [X] Create React app
+- [X] Install packages
+- [X] Start dev server
+- [X] See Vite welcome page in browser
+- [X] Now you have TWO servers running:
   - Backend: http://localhost:5000
   - Frontend: http://localhost:5173
 
@@ -493,10 +493,10 @@ node src/config/testConnection.js
 ```
 
 **Your task:**
-- [ ] Create database.js
-- [ ] Create and run testConnection.js
-- [ ] See success message
-- [ ] If you get an error, check your .env file settings
+- [X] Create database.js
+- [X] Create and run testConnection.js
+- [X] See success message
+- [X] If you get an error, check your .env file settings
 
 ---
 
@@ -564,9 +564,9 @@ module.exports = User;
 3. **beforeCreate hook:** Automatically hashes password before saving to database
 
 **Your task:**
-- [ ] Create User.js model
-- [ ] Read through the code and understand each section
-- [ ] Note: We'll test this after creating all models
+- [X] Create User.js model
+- [X] Read through the code and understand each section
+- [X] Note: We'll test this after creating all models
 
 ---
 
@@ -624,8 +624,8 @@ module.exports = Skateboard;
 - Sequelize handles the conversion!
 
 **Your task:**
-- [ ] Create Skateboard.js model
-- [ ] Notice how similar it is to User model
+- [X] Create Skateboard.js model
+- [X] Notice how similar it is to User model
 - [ ] Understand the camelCase vs snake_case conversion
 
 ---
@@ -692,8 +692,8 @@ module.exports = Rental;
 ```
 
 **Your task:**
-- [ ] Create Rental.js model
-- [ ] Notice it has `userId` and `skateboardId` - these link to other tables!
+- [X] Create Rental.js model
+- [X] Notice it has `userId` and `skateboardId` - these link to other tables!
 
 ---
 
@@ -747,9 +747,9 @@ module.exports = {
 - Similar for Skateboard ↔ Rental
 
 **Your task:**
-- [ ] Create index.js
-- [ ] Understand the relationships
-- [ ] Draw this on paper if it helps visualize
+- [X] Create index.js
+- [X] Understand the relationships
+- [X] Draw this on paper if it helps visualize
 
 ---
 
