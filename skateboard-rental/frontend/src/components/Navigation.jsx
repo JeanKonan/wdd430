@@ -31,7 +31,11 @@ export default function Navigation() {
     <nav className="navbar">
       <div className="nav-container">
         <Link to="/" className="nav-logo">
-          🛹 Skateboard Rentals
+          <img
+            src="/arskate_logo.png"
+            alt="Arkate Skateboard Rentals"
+            style={{ height: "60px" }}
+            />
         </Link>
 
         <ul className="nav-menu">

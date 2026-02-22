@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="home">
       <div className="hero">
-        <h1>Welcome to Skateboard Rentals</h1>
+        <h1>Grab. Ride. Go.</h1>
         <p>Find the perfect skateboard for your next adventure</p>
         <Link to="/rentals" className="btn btn-primary">
           Browse Skateboards
