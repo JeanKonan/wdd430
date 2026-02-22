@@ -10,17 +10,17 @@ router.get('/', authMiddleware, async (req, res) => {
     try {
         const rentals = await Rental.findAll({ where: { userId: req.user.id } });
 
-        if (!rentals || rentals.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: 'No rentals found'
-            });
-        }
+        // if (!rentals || rentals.length === 0) {
+        //     return res.status(404).json({
+        //         success: false,
+        //         message: 'No rentals found'
+        //     });
+        // }
 
         res.json({
             success: true,
             message: 'Rentals retrieved successfully',
-            rentals: rentals
+            rentals: rentals || []
         })
     } catch (error) {
         res.status(500).json({
@@ -31,35 +31,7 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 });
 
-// GET /api/rentals/:id - Get rental by ID
-router.get('/:id', authMiddleware, async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        const rental = await Rental.findByPk(id);
-
-        if (!rental || rental.userId !== req.user.id) {
-            return res.status(404).json({
-                success: false,
-                message: 'Rental not found'
-            });
-        }
-
-        res.json({
-            success: true,
-            message: 'Rental retrieved successfully',
-            rental: rental
-        });
-
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error fetching rental',
-            error: error.message
-        })
-    }
-})
-
+// POST /api/rentals - Create a new rental
 router.post('/', authMiddleware, async (req, res) => {
     const { skateboardId, pickupDate, returnDate } = req.body;
 
@@ -103,6 +75,84 @@ router.post('/', authMiddleware, async (req, res) => {
             error: error.message
         })
     }
-})
+});
+
+// PATCH /api/rentals/:id/cancel - Cancel a rental (MUST come before GET /:id)
+router.patch('/:id/cancel', authMiddleware, async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const rental = await Rental.findByPk(id);
+
+        if (!rental) {
+            return res.status(404).json({
+                success: false,
+                message: 'Rental not found'
+            });
+        }
+
+        // Only the owner can cancel their rental
+        if (rental.userId !== req.user.id) {
+            return res.status(403).json({
+                success: false,
+                message: 'Not authorized to cancel this rental'
+            });
+        }
+
+        // Can't cancel if already completed
+        if (rental.status === 'completed') {
+            return res.status(400).json({
+                success: false,
+                message: 'Cannot cancel a completed rental'
+            });
+        }
+
+        // Update status to cancelled
+        rental.status = 'cancelled';
+        await rental.save();
+
+        res.json({
+            success: true,
+            message: 'Rental cancelled successfully',
+            rental: rental
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error cancelling rental',
+            error: error.message
+        });
+    }
+});
+
+// GET /api/rentals/:id - Get rental by ID (MUST come after /:id/cancel)
+router.get('/:id', authMiddleware, async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const rental = await Rental.findByPk(id);
+
+        if (!rental || rental.userId !== req.user.id) {
+            return res.status(404).json({
+                success: false,
+                message: 'Rental not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Rental retrieved successfully',
+            rental: rental
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching rental',
+            error: error.message
+        })
+    }
+});
 
 export { router as rentalRoutes };

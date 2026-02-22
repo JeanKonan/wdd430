@@ -3,6 +3,7 @@ import cors from 'cors';
 import { authRoutes } from './routes/authRoutes.js';
 import { skateboardRoutes } from './routes/skateboardRoutes.js';
 import { rentalRoutes } from './routes/rentalRoutes.js';
+import { userRoutes } from './routes/userRoutes.js';
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/skateboards', skateboardRoutes);
 app.use('/api/rentals', rentalRoutes);
+app.use('/api/users', userRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

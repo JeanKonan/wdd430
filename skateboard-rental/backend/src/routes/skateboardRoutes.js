@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
 
         res.json({
             success: true,
-            skateboards: skateboards
+            skateboards: skateboards || []
         });
 
     } catch (error) {

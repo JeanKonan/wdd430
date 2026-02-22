@@ -1,0 +1,140 @@
+.checkout {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.checkout-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.skateboard-details {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.skateboard-details h1 {
+  margin-top: 0;
+  color: #333;
+  font-size: 24px;
+}
+
+.skateboard-info {
+  margin-top: 20px;
+}
+
+.skateboard-info h2 {
+  color: #667eea;
+  margin-top: 0;
+  font-size: 28px;
+}
+
+.skateboard-info p {
+  font-size: 16px;
+  margin: 12px 0;
+  color: #555;
+}
+
+.checkout-form {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.checkout-form h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+}
+
+.price-summary {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  border-left: 4px solid #667eea;
+}
+
+.price-summary p {
+  margin: 10px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.price-summary .total {
+  font-size: 20px;
+  color: #667eea;
+  font-weight: bold;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.checkout-form button {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 14px;
+}
+
+.checkout-form .btn-secondary {
+  background-color: #999;
+}
+
+.checkout-form .btn-secondary:hover {
+  background-color: #777;
+}
+
+.checkout.error {
+  text-align: center;
+  color: #d32f2f;
+  padding: 40px 20px;
+}
+
+/* Responsive - stack on mobile */
+@media (max-width: 768px) {
+  .checkout-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .skateboard-details,
+  .checkout-form {
+    padding: 20px;
+  }
+}
