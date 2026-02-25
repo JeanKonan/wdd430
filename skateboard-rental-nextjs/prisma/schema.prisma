@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// User model - stores customer information
+model User {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  passwordHash  String
+  name          String
+  createdAt     DateTime  @default(now())
+  rentals       Rental[]  // One user can have many rentals
+}
+
+// Skateboard model - stores skateboard inventory
+model Skateboard {
+  id            Int       @id @default(autoincrement())
+  name          String
+  type          String    // street, cruiser, longboard, electric
+  size          String
+  pricePerDay   Float
+  isAvailable   Boolean   @default(true)
+  imageUrl      String?   // ? means optional
+  createdAt     DateTime  @default(now())
+  rentals       Rental[]  // One skateboard can have many rentals
+}
+
+// Rental model - stores rental transactions
+model Rental {
+  id            Int         @id @default(autoincrement())
+  userId        Int
+  user          User        @relation(fields: [userId], references: [id])
+  skateboardId  Int
+  skateboard    Skateboard  @relation(fields: [skateboardId], references: [id])
+  startDate     DateTime
+  endDate       DateTime
+  totalPrice    Float
+  status        String      @default("active") // active, completed, cancelled
+  createdAt     DateTime    @default(now())
+}

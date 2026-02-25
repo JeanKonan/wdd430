@@ -618,3 +618,1516 @@ With 4 people: ~8 hours per person = **2 days of work each in parallel** (doable
 8. **Be honest about MVP** - "This is v1, we plan to add payments, emails, etc."
 
 Good luck with your presentation! 🛹
+
+---
+---
+
+# 🚀 NEXT.JS PROTOTYPE - Learning-Focused Implementation Tasks
+
+## Project: Next.js + PostgreSQL Prototype (Separate from React/Node project)
+
+**Goal**: Build a working prototype while learning Next.js App Router, Prisma, and PostgreSQL
+**Timeline**: 3-4 days of focused work
+**Approach**: Guided, step-by-step learning with hands-on implementation
+**Location**: `skateboard-rental-nextjs/` (new folder, separate from existing project)
+
+---
+
+## 📚 Learning Concepts Overview
+
+Before starting, understand these key technologies:
+- **Next.js App Router**: Full-stack React framework with built-in API routes
+- **Prisma ORM**: Type-safe database toolkit for schema management and queries
+- **PostgreSQL**: Relational database for data persistence
+- **Server Components**: React components that run on the server
+- **API Routes**: Backend endpoints in the `/app/api` folder
+
+---
+
+## Phase 1: Project Setup & Environment (Day 1, ~2-3 hours)
+
+### 🎯 Learning Objectives
+- Understand Next.js project structure
+- Learn environment variable management
+- Set up PostgreSQL database locally
+- Understand Prisma workflow (schema → migrate → query)
+
+### 📖 Prerequisites - Read/Watch First
+- [ ] **Read**: Next.js App Router documentation intro
+- [ ] **Read**: What is Prisma and why use it
+- [ ] **Watch**: 10-minute video on Next.js 14 App Router basics
+- [ ] **Understand**: Difference between Server and Client Components
+
+### 🛠️ Task 1.1: Create Next.js Application
+**What you'll learn**: Project scaffolding, Next.js configuration options
+
+- [ ] Open terminal in your workspace folder
+- [ ] Run: `npx create-next-app@latest skateboard-rental-nextjs`
+- [ ] When prompted, select:
+  - TypeScript: **No** (use JavaScript for simplicity)
+  - ESLint: **Yes**
+  - Tailwind CSS: **Yes** (for easy styling)
+  - `src/` directory: **Yes** (better organization)
+  - App Router: **Yes** (modern approach)
+  - Import alias: **Yes** (default `@/*`)
+- [ ] Navigate into project: `cd skateboard-rental-nextjs`
+- [ ] Start dev server: `npm run dev`
+- [ ] Visit http://localhost:3000
+- [ ] **✓ Checkpoint**: Can you see the default Next.js welcome page?
+
+### 🛠️ Task 1.2: Install PostgreSQL Locally
+**What you'll learn**: Database server setup, connection management
+
+- [ ] **Windows**: Download and install PostgreSQL from postgresql.org
+- [ ] During installation, remember your `postgres` user password
+- [ ] **Verify**: Run `psql --version` in terminal or open pgAdmin
+- [ ] **Create database**: Using pgAdmin or psql, create `skateboard_rental_dev`
+  ```sql
+  CREATE DATABASE skateboard_rental_dev;
+  ```
+- [ ] **✓ Checkpoint**: Can you see the database in pgAdmin?
+
+### 🛠️ Task 1.3: Install and Configure Prisma
+**What you'll learn**: ORM setup, database connection strings
+
+- [ ] Install Prisma packages: `npm install prisma @prisma/client`
+- [ ] Initialize Prisma: `npx prisma init`
+- [ ] **Notice what was created**:
+  - `/prisma/schema.prisma` (database schema file)
+  - `.env` file (environment variables)
+- [ ] Open `.env` and update `DATABASE_URL`:
+  ```
+  DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@localhost:5432/skateboard_rental_dev"
+  ```
+  Replace `YOUR_PASSWORD` with your actual PostgreSQL password
+- [ ] Test connection: `npx prisma studio`
+- [ ] **✓ Checkpoint**: Does Prisma Studio open without errors?
+
+### 🛠️ Task 1.4: Explore Project Structure
+**What you'll learn**: Next.js App Router file structure, routing conventions
+
+- [ ] Open project in VS Code
+- [ ] Explore these folders:
+  - `/src/app` - Pages and API routes (App Router)
+  - `/src/app/page.js` - Homepage component
+  - `/prisma` - Database schema and migrations
+  - `/public` - Static assets
+- [ ] **Learning Exercise**: Create `/src/app/test/page.js`:
+  ```javascript
+  export default function TestPage() {
+    return <h1>My Test Page</h1>
+  }
+  ```
+- [ ] Visit http://localhost:3000/test
+- [ ] **✓ Checkpoint**: See "My Test Page"? You understand file-based routing!
+- [ ] Delete test page after verification
+
+### ✅ Phase 1 Completion Checklist
+- [ ] Next.js app runs successfully at http://localhost:3000
+- [ ] PostgreSQL installed and database created
+- [ ] Prisma installed and connected to database
+- [ ] Understand the `/app` folder structure
+- [ ] Can create new pages using file-based routing
+
+**🎓 What You Learned**: Next.js project setup, PostgreSQL installation, Prisma initialization, file-based routing
+
+---
+
+## Phase 2: Database Schema & Models (Day 1, ~2 hours)
+
+### 🎯 Learning Objectives
+- Learn Prisma schema syntax
+- Understand database migrations
+- Learn data modeling and relationships
+- Practice seeding data
+
+### 📖 Prerequisites - Read First
+- [ ] **Read**: Prisma schema basics documentation
+- [ ] **Read**: Prisma relations (one-to-many relationships)
+- [ ] **Understand**: Primary keys, foreign keys, data types
+
+### 🛠️ Task 2.1: Define User Model
+**What you'll learn**: Schema syntax, field types, decorators
+
+- [ ] Open `/prisma/schema.prisma`
+- [ ] **Study** the existing config (generator and datasource)
+- [ ] Add the **User** model:
+  ```prisma
+  model User {
+    id            Int       @id @default(autoincrement())
+    email         String    @unique
+    passwordHash  String
+    name          String
+    createdAt     DateTime  @default(now())
+    rentals       Rental[]  // One user can have many rentals
+  }
+  ```
+- [ ] **Self-quiz**:
+  - What does `@id` mean?
+  - What does `@unique` do?
+  - What does `@default(autoincrement())` mean?
+  - What is `Rental[]`?
+
+### 🛠️ Task 2.2: Define Skateboard Model
+**What you'll learn**: Optional fields, Boolean defaults, Float type
+
+- [ ] Add the **Skateboard** model below User:
+  ```prisma
+  model Skateboard {
+    id            Int       @id @default(autoincrement())
+    name          String
+    type          String    // street, cruiser, longboard
+    size          String
+    pricePerDay   Float
+    isAvailable   Boolean   @default(true)
+    imageUrl      String?   // ? means optional
+    createdAt     DateTime  @default(now())
+    rentals       Rental[]  // One skateboard can have many rentals
+  }
+  ```
+- [ ] **Think**: Why is `imageUrl` optional (String?)?
+
+### 🛠️ Task 2.3: Define Rental Model with Relations
+**What you'll learn**: Foreign keys, relations, many-to-many through pattern
+
+- [ ] Add the **Rental** model:
+  ```prisma
+  model Rental {
+    id            Int         @id @default(autoincrement())
+    userId        Int
+    user          User        @relation(fields: [userId], references: [id])
+    skateboardId  Int
+    skateboard    Skateboard  @relation(fields: [skateboardId], references: [id])
+    startDate     DateTime
+    endDate       DateTime
+    totalPrice    Float
+    status        String      @default("active") // active, completed, cancelled
+    createdAt     DateTime    @default(now())
+  }
+  ```
+- [ ] **Learning Exercise**: Draw this relationship on paper or mentally map:
+  - User → Rental (one-to-many)
+  - Skateboard → Rental (one-to-many)
+  - User ←→ Skateboard (many-to-many through Rental)
+
+### 🛠️ Task 2.4: Create First Migration
+**What you'll learn**: Database migrations, SQL generation, version control for DB
+
+- [ ] Run migration command:
+  ```
+  npx prisma migrate dev --name init
+  ```
+- [ ] **What just happened?**
+  - Prisma generated SQL CREATE TABLE statements
+  - Tables were created in your PostgreSQL database
+  - Migration file saved in `/prisma/migrations`
+  - Prisma Client was auto-generated for queries
+- [ ] Examine the migration file in `/prisma/migrations/.../migration.sql`
+- [ ] Open Prisma Studio: `npx prisma studio`
+- [ ] **✓ Checkpoint**: Can you see 3 empty tables (User, Skateboard, Rental)?
+
+### 🛠️ Task 2.5: Create Seed Script
+**What you'll learn**: Database seeding, Prisma Client usage, async operations
+
+- [ ] Create file: `/prisma/seed.js`
+- [ ] Add seed code:
+  ```javascript
+  const { PrismaClient } = require('@prisma/client')
+  const prisma = new PrismaClient()
+
+  async function main() {
+    // Clear existing data
+    await prisma.rental.deleteMany()
+    await prisma.skateboard.deleteMany()
+    await prisma.user.deleteMany()
+
+    console.log('🧹 Cleared existing data')
+
+    // Create demo user
+    const user = await prisma.user.create({
+      data: {
+        email: 'demo@example.com',
+        passwordHash: 'hashed_password_placeholder',
+        name: 'Demo User',
+      },
+    })
+
+    console.log('✅ Created demo user:', user.email)
+
+    // Create skateboards
+    const skateboards = await prisma.skateboard.createMany({
+      data: [
+        {
+          name: 'Street Pro 8.0',
+          type: 'street',
+          size: '8.0"',
+          pricePerDay: 15.00,
+          isAvailable: true,
+        },
+        {
+          name: 'Cruiser Wave',
+          type: 'cruiser',
+          size: '7.5"',
+          pricePerDay: 12.00,
+          isAvailable: true,
+        },
+        {
+          name: 'Longboard Glide',
+          type: 'longboard',
+          size: '9.0"',
+          pricePerDay: 18.00,
+          isAvailable: true,
+        },
+        {
+          name: 'Electric Boost',
+          type: 'electric',
+          size: '8.5"',
+          pricePerDay: 35.00,
+          isAvailable: true,
+        },
+        {
+          name: 'Mini Cruiser',
+          type: 'cruiser',
+          size: '6.5"',
+          pricePerDay: 10.00,
+          isAvailable: false, // Already rented
+        },
+      ],
+    })
+
+    console.log(`✅ Created ${skateboards.count} skateboards`)
+  }
+
+  main()
+    .catch((e) => {
+      console.error('❌ Error seeding database:', e)
+      process.exit(1)
+    })
+    .finally(async () => {
+      await prisma.$disconnect()
+    })
+  ```
+
+### 🛠️ Task 2.6: Configure and Run Seed
+**What you'll learn**: Package.json scripts, Prisma seed configuration
+
+- [ ] Add to `package.json` (create `"prisma"` section):
+  ```json
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  }
+  ```
+- [ ] Run the seed: `npx prisma db seed`
+- [ ] Watch the console output
+- [ ] Open Prisma Studio: `npx prisma studio`
+- [ ] **✓ Checkpoint**: Can you see 1 user and 5 skateboards in the database?
+
+### ✅ Phase 2 Completion Checklist
+- [ ] Schema defined with 3 related models
+- [ ] Migration created and successfully applied
+- [ ] Database tables exist in PostgreSQL
+- [ ] Seed script created and working
+- [ ] Can view seed data in Prisma Studio
+- [ ] Understand relationships between models
+
+**🎓 What You Learned**: Prisma schema syntax, database migrations, model relationships, data seeding, Prisma Client basics
+
+---
+
+## Phase 3: API Routes (Day 2, ~3-4 hours)
+
+### 🎯 Learning Objectives
+- Create API endpoints using Next.js App Router
+- Learn Prisma Client queries (findMany, findUnique, create, update)
+- Understand request/response handling
+- Practice error handling in API routes
+- Learn route parameters and HTTP methods
+
+### 📖 Prerequisites - Read First
+- [ ] **Read**: Next.js Route Handlers documentation
+- [ ] **Read**: Prisma Client CRUD operations
+- [ ] **Understand**: HTTP methods (GET, POST, PUT, DELETE)
+- [ ] **Understand**: JSON request/response format
+- [ ] **Understand**: RESTful API design principles
+
+### 🛠️ Task 3.1: Create GET All Skateboards Endpoint
+**What you'll learn**: API route structure, Prisma queries, response formatting
+
+- [ ] Create folder: `/src/app/api/skateboards`
+- [ ] Create file: `/src/app/api/skateboards/route.js`
+- [ ] Add code:
+  ```javascript
+  import { PrismaClient } from '@prisma/client'
+  import { NextResponse } from 'next/server'
+
+  const prisma = new PrismaClient()
+
+  export async function GET() {
+    try {
+      const skateboards = await prisma.skateboard.findMany({
+        orderBy: {
+          createdAt: 'desc'
+        }
+      })
+      
+      return NextResponse.json(skateboards)
+    } catch (error) {
+      console.error('Error fetching skateboards:', error)
+      return NextResponse.json(
+        { error: 'Failed to fetch skateboards' },
+        { status: 500 }
+      )
+    }
+  }
+  ```
+- [ ] **Study the code** - Identify:
+  - Where Prisma Client comes from
+  - What `findMany()` does
+  - What `NextResponse.json()` returns
+  - Why we use try/catch
+  - What `orderBy` does
+- [ ] Test in browser: http://localhost:3000/api/skateboards
+- [ ] **✓ Checkpoint**: Do you see JSON array with 5 skateboards?
+
+### 🛠️ Task 3.2: Create GET Single Skateboard Endpoint
+**What you'll learn**: Dynamic route parameters, findUnique query, 404 handling
+
+- [ ] Create folder: `/src/app/api/skateboards/[id]`
+- [ ] Create file: `/src/app/api/skateboards/[id]/route.js`
+- [ ] **Note**: `[id]` is a dynamic route parameter!
+- [ ] Add code:
+  ```javascript
+  import { PrismaClient } from '@prisma/client'
+  import { NextResponse } from 'next/server'
+
+  const prisma = new PrismaClient()
+
+  export async function GET(request, { params }) {
+    try {
+      const id = parseInt(params.id)
+      
+      const skateboard = await prisma.skateboard.findUnique({
+        where: { id }
+      })
+
+      if (!skateboard) {
+        return NextResponse.json(
+          { error: 'Skateboard not found' },
+          { status: 404 }
+        )
+      }
+
+      return NextResponse.json(skateboard)
+    } catch (error) {
+      console.error('Error fetching skateboard:', error)
+      return NextResponse.json(
+        { error: 'Failed to fetch skateboard' },
+        { status: 500 }
+      )
+    }
+  }
+  ```
+- [ ] **Understanding check**:
+  - Where does `params.id` come from?
+  - Why use `parseInt()`?
+  - What's the difference between `findUnique()` and `findMany()`?
+  - Why return 404 if not found?
+- [ ] Test: http://localhost:3000/api/skateboards/1
+- [ ] Test: http://localhost:3000/api/skateboards/999 (should return 404)
+- [ ] **✓ Checkpoint**: Both URLs return appropriate responses?
+
+### 🛠️ Task 3.3: Create Rentals Endpoints (GET and POST)
+**What you'll learn**: Multiple HTTP methods in one route, request body parsing, business logic
+
+- [ ] Create folder: `/src/app/api/rentals`
+- [ ] Create file: `/src/app/api/rentals/route.js`
+- [ ] Add code:
+  ```javascript
+  import { PrismaClient } from '@prisma/client'
+  import { NextResponse } from 'next/server'
+
+  const prisma = new PrismaClient()
+
+  // GET all rentals
+  export async function GET() {
+    try {
+      const rentals = await prisma.rental.findMany({
+        include: {
+          skateboard: true,  // Include full skateboard object
+          user: {
+            select: {  // Only select specific user fields
+              id: true,
+              name: true,
+              email: true,
+              // Don't include passwordHash for security!
+            }
+          }
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      })
+      
+      return NextResponse.json(rentals)
+    } catch (error) {
+      console.error('Error fetching rentals:', error)
+      return NextResponse.json(
+        { error: 'Failed to fetch rentals' },
+        { status: 500 }
+      )
+    }
+  }
+
+  // POST create new rental
+  export async function POST(request) {
+    try {
+      const body = await request.json()
+      const { userId, skateboardId, startDate, endDate } = body
+
+      // Validation
+      if (!userId || !skateboardId || !startDate || !endDate) {
+        return NextResponse.json(
+          { error: 'Missing required fields: userId, skateboardId, startDate, endDate' },
+          { status: 400 }
+        )
+      }
+
+      // Check if skateboard exists and is available
+      const skateboard = await prisma.skateboard.findUnique({
+        where: { id: parseInt(skateboardId) }
+      })
+
+      if (!skateboard) {
+        return NextResponse.json(
+          { error: 'Skateboard not found' },
+          { status: 404 }
+        )
+      }
+
+      if (!skateboard.isAvailable) {
+        return NextResponse.json(
+          { error: 'Skateboard is not available' },
+          { status: 400 }
+        )
+      }
+
+      // Calculate total price
+      const start = new Date(startDate)
+      const end = new Date(endDate)
+      const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24))
+      
+      if (days <= 0) {
+        return NextResponse.json(
+          { error: 'End date must be after start date' },
+          { status: 400 }
+        )
+      }
+
+      const totalPrice = days * skateboard.pricePerDay
+
+      // Create rental and update skateboard in a transaction
+      const rental = await prisma.rental.create({
+        data: {
+          userId: parseInt(userId),
+          skateboardId: parseInt(skateboardId),
+          startDate: new Date(startDate),
+          endDate: new Date(endDate),
+          totalPrice,
+          status: 'active'
+        },
+        include: {
+          skateboard: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true
+            }
+          }
+        }
+      })
+
+      // Update skateboard availability
+      await prisma.skateboard.update({
+        where: { id: parseInt(skateboardId) },
+        data: { isAvailable: false }
+      })
+
+      return NextResponse.json(rental, { status: 201 })
+    } catch (error) {
+      console.error('Error creating rental:', error)
+      return NextResponse.json(
+        { error: 'Failed to create rental' },
+        { status: 500 }
+      )
+    }
+  }
+  ```
+- [ ] **Deep understanding exercise** - Explain:
+  - How we get the request body
+  - What validation is performed
+  - How the price calculation works
+  - What `include` does in Prisma queries
+  - Why we update skateboard after creating rental
+  - What HTTP status code 201 means
+
+### 🛠️ Task 3.4: Test APIs with Thunder Client or Postman
+**What you'll learn**: API testing, request/response inspection
+
+- [ ] Install VS Code extension: Thunder Client (or use Postman)
+- [ ] **Test GET /api/skateboards**:
+  - Method: GET
+  - URL: `http://localhost:3000/api/skateboards`
+  - Expected: Array of 5 skateboards
+- [ ] **Test GET /api/skateboards/1**:
+  - Method: GET
+  - URL: `http://localhost:3000/api/skateboards/1`
+  - Expected: Single skateboard object
+- [ ] **Test POST /api/rentals**:
+  - Method: POST
+  - URL: `http://localhost:3000/api/rentals`
+  - Headers: `Content-Type: application/json`
+  - Body (JSON):
+    ```json
+    {
+      "userId": 1,
+      "skateboardId": 1,
+      "startDate": "2026-02-25",
+      "endDate": "2026-02-27"
+    }
+    ```
+  - Expected: New rental object with totalPrice = 30 (2 days × $15)
+- [ ] **Test GET /api/rentals**:
+  - Method: GET
+  - URL: `http://localhost:3000/api/rentals`
+  - Expected: Array with rental you just created
+- [ ] Open Prisma Studio and verify:
+  - Rental exists in database
+  - Skateboard #1's `isAvailable` is now `false`
+- [ ] **✓ Checkpoint**: All API tests pass successfully?
+
+### ✅ Phase 3 Completion Checklist
+- [ ] GET /api/skateboards returns all skateboards
+- [ ] GET /api/skateboards/[id] returns single skateboard
+- [ ] POST /api/rentals creates new rental successfully
+- [ ] GET /api/rentals returns all rentals with user and skateboard details
+- [ ] Price calculation works correctly
+- [ ] Skateboard availability updates after rental creation
+- [ ] Error handling returns appropriate status codes
+- [ ] Can test all endpoints with Thunder Client
+
+**🎓 What You Learned**: Next.js API routes, Prisma queries (findMany, findUnique, create, update), dynamic routing, request handling, error responses, API testing
+
+---
+
+## Phase 4: Frontend Pages & Components (Day 2-3, ~4-5 hours)
+
+### 🎯 Learning Objectives
+- Build pages with Next.js App Router
+- Understand Server vs Client Components
+- Fetch and display data in UI
+- Create forms with client-side interactions
+- Use Tailwind CSS for styling
+- Implement navigation and routing
+
+### 📖 Prerequisites - Read First
+- [ ] **Read**: Next.js Server Components vs Client Components
+- [ ] **Read**: Next.js data fetching in Server Components
+- [ ] **Understand**: When to use 'use client' directive
+- [ ] **Review**: Basic Tailwind CSS utility classes
+- [ ] **Understand**: React hooks (useState, useRouter)
+
+### 🛠️ Task 4.1: Create Home Page (Skateboard Listing)
+**What you'll learn**: Server Components, async data fetching, Tailwind grid layout
+
+- [ ] Open `/src/app/page.js` (already exists)
+- [ ] Replace entire content with:
+  ```javascript
+  import Link from 'next/link'
+
+  // Server Component - can async fetch data directly
+  async function getSkateboards() {
+    const res = await fetch('http://localhost:3000/api/skateboards', {
+      cache: 'no-store' // Always get fresh data
+    })
+    
+    if (!res.ok) {
+      throw new Error('Failed to fetch skateboards')
+    }
+    
+    return res.json()
+  }
+
+  export default async function Home() {
+    const skateboards = await getSkateboards()
+
+    return (
+      <main className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold mb-8">Available Skateboards</h1>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {skateboards.map((skateboard) => (
+            <div 
+              key={skateboard.id} 
+              className="border rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow"
+            >
+              <h2 className="text-2xl font-semibold mb-2">{skateboard.name}</h2>
+              <p className="text-gray-600 mb-1">Type: {skateboard.type}</p>
+              <p className="text-gray-600 mb-1">Size: {skateboard.size}</p>
+              <p className="text-lg font-bold text-green-600 mb-4">
+                ${skateboard.pricePerDay}/day
+              </p>
+              <p className="mb-4">
+                {skateboard.isAvailable ? (
+                  <span className="text-green-600 font-medium">✓ Available</span>
+                ) : (
+                  <span className="text-red-600 font-medium">✗ Rented</span>
+                )}
+              </p>
+              
+              <Link 
+                href={`/skateboards/${skateboard.id}`}
+                className="block text-center bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
+              >
+                View Details
+              </Link>
+            </div>
+          ))}
+        </div>
+      </main>
+    )
+  }
+  ```
+- [ ] **Understanding exercise**:
+  - Why is this component `async`?
+  - Where does the data come from?
+  - What is `cache: 'no-store'` doing?
+  - How does `map()` render multiple skateboards?
+  - Identify these Tailwind classes: `grid`, `md:grid-cols-2`, `hover:shadow-lg`
+- [ ] Save and visit: http://localhost:3000
+- [ ] **✓ Checkpoint**: Do you see a grid of skateboard cards?
+
+### 🛠️ Task 4.2: Create Skateboard Detail Page
+**What you'll learn**: Dynamic routes in pages, params, conditional rendering
+
+- [ ] Create folder: `/src/app/skateboards/[id]`
+- [ ] Create file: `/src/app/skateboards/[id]/page.js`
+- [ ] Add code:
+  ```javascript
+  import Link from 'next/link'
+  import RentalForm from './RentalForm'
+
+  async function getSkateboard(id) {
+    const res = await fetch(`http://localhost:3000/api/skateboards/${id}`, {
+      cache: 'no-store'
+    })
+    
+    if (!res.ok) {
+      throw new Error('Failed to fetch skateboard')
+    }
+    
+    return res.json()
+  }
+
+  export default async function SkateboardDetailPage({ params }) {
+    const skateboard = await getSkateboard(params.id)
+
+    return (
+      <main className="container mx-auto px-4 py-8">
+        <Link href="/" className="text-blue-600 hover:underline mb-4 block">
+          ← Back to Skateboards
+        </Link>
+        
+        <div className="max-w-2xl">
+          <h1 className="text-4xl font-bold mb-4">{skateboard.name}</h1>
+          
+          <div className="bg-gray-100 p-6 rounded-lg mb-6">
+            <p className="text-lg mb-2"><strong>Type:</strong> {skateboard.type}</p>
+            <p className="text-lg mb-2"><strong>Size:</strong> {skateboard.size}</p>
+            <p className="text-2xl font-bold text-green-600 mb-2">
+              ${skateboard.pricePerDay} per day
+            </p>
+            <p className="text-lg">
+              <strong>Status:</strong> {' '}
+              {skateboard.isAvailable ? (
+                <span className="text-green-600">Available</span>
+              ) : (
+                <span className="text-red-600">Currently Rented</span>
+              )}
+            </p>
+          </div>
+
+          {skateboard.isAvailable && (
+            <div>
+              <h2 className="text-2xl font-bold mb-4">Rent this Skateboard</h2>
+              <RentalForm skateboard={skateboard} />
+            </div>
+          )}
+        </div>
+      </main>
+    )
+  }
+  ```
+- [ ] **Think through**:
+  - How does this page get the skateboard ID?
+  - What is `params.id`?
+  - Why show RentalForm only if `isAvailable`?
+  - What is being imported from `./RentalForm`?
+
+### 🛠️ Task 4.3: Create Rental Form (Client Component)
+**What you'll learn**: Client Components, forms, state management, API calls from client
+
+- [ ] Create file: `/src/app/skateboards/[id]/RentalForm.js` (same folder as page.js)
+- [ ] Add code:
+  ```javascript
+  'use client' // This makes it a Client Component!
+
+  import { useState } from 'react'
+  import { useRouter } from 'next/navigation'
+
+  export default function RentalForm({ skateboard }) {
+    const router = useRouter()
+    const [startDate, setStartDate] = useState('')
+    const [endDate, setEndDate] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
+
+    // Calculate estimated price
+    const calculatePrice = () => {
+      if (!startDate || !endDate) return 0
+      const start = new Date(startDate)
+      const end = new Date(endDate)
+      const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24))
+      return days > 0 ? days * skateboard.pricePerDay : 0
+    }
+
+    const estimatedPrice = calculatePrice()
+
+    const handleSubmit = async (e) => {
+      e.preventDefault()
+      setLoading(true)
+      setError('')
+
+      // Client-side validation
+      const start = new Date(startDate)
+      const end = new Date(endDate)
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+
+      if (start < today) {
+        setError('Start date cannot be in the past')
+        setLoading(false)
+        return
+      }
+
+      if (end <= start) {
+        setError('End date must be after start date')
+        setLoading(false)
+        return
+      }
+
+      try {
+        const response = await fetch('/api/rentals', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: 1, // Demo user (we'll add real auth later)
+            skateboardId: skateboard.id,
+            startDate,
+            endDate,
+          }),
+        })
+
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to create rental')
+        }
+
+        // Success! Redirect to rentals page
+        alert(`Rental created successfully! Total: $${data.totalPrice.toFixed(2)}`)
+        router.push('/rentals')
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    return (
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg border shadow-md">
+        {error && (
+          <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
+            {error}
+          </div>
+        )}
+        
+        <div className="mb-4">
+          <label className="block text-gray-700 font-medium mb-2">
+            Start Date
+          </label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            required
+            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-gray-700 font-medium mb-2">
+            End Date
+          </label>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            required
+            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {estimatedPrice > 0 && (
+          <div className="bg-blue-50 p-4 rounded mb-4">
+            <p className="text-lg">
+              Estimated Total: <strong className="text-blue-700">${estimatedPrice.toFixed(2)}</strong>
+            </p>
+            <p className="text-sm text-gray-600">
+              {Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24))} days × ${skateboard.pricePerDay}/day
+            </p>
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white py-3 px-4 rounded font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+        >
+          {loading ? 'Creating Rental...' : 'Rent Skateboard'}
+        </button>
+      </form>
+    )
+  }
+  ```
+- [ ] **Critical understanding** - Answer these:
+  - Why does this component have `'use client'` at the top?
+  - What are the `useState` hooks doing?
+  - How does form submission work?
+  - Where does the form data go?
+  - Why is `userId: 1` hardcoded?
+  - How does the price preview work?
+- [ ] Test the flow:
+  1. Visit a skateboard detail page
+  2. Fill out dates
+  3. Watch estimated price calculate
+  4. Submit the form
+- [ ] **✓ Checkpoint**: Does it create rental and redirect to /rentals?
+
+### 🛠️ Task 4.4: Create Rentals Dashboard Page
+**What you'll learn**: Displaying related data, date formatting, conditional rendering
+
+- [ ] Create folder: `/src/app/rentals`
+- [ ] Create file: `/src/app/rentals/page.js`
+- [ ] Add code:
+  ```javascript
+  import Link from 'next/link'
+
+  async function getRentals() {
+    const res = await fetch('http://localhost:3000/api/rentals', {
+      cache: 'no-store'
+    })
+    
+    if (!res.ok) {
+      throw new Error('Failed to fetch rentals')
+    }
+    
+    return res.json()
+  }
+
+  export default async function RentalsPage() {
+    const rentals = await getRentals()
+
+    return (
+      <main className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold mb-8">My Rentals</h1>
+        
+        <Link href="/" className="text-blue-600 hover:underline mb-6 block">
+          ← Back to Skateboards
+        </Link>
+
+        {rentals.length === 0 ? (
+          <div className="bg-gray-100 p-8 rounded-lg text-center">
+            <p className="text-gray-600 text-lg">No rentals yet. Start by renting a skateboard!</p>
+            <Link 
+              href="/" 
+              className="inline-block mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+            >
+              Browse Skateboards
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {rentals.map((rental) => (
+              <div key={rental.id} className="border rounded-lg p-6 shadow-md bg-white">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-semibold mb-2">
+                      {rental.skateboard.name}
+                    </h2>
+                    <p className="text-gray-600 mb-1">
+                      <strong>Type:</strong> {rental.skateboard.type} | <strong>Size:</strong> {rental.skateboard.size}
+                    </p>
+                    <p className="text-gray-600 mb-1">
+                      <strong>Start:</strong> {new Date(rental.startDate).toLocaleDateString()}
+                    </p>
+                    <p className="text-gray-600 mb-1">
+                      <strong>End:</strong> {new Date(rental.endDate).toLocaleDateString()}
+                    </p>
+                    <p className="text-lg font-bold text-green-600 mt-2">
+                      Total: ${rental.totalPrice.toFixed(2)}
+                    </p>
+                  </div>
+                  <div>
+                    <span className={`px-3 py-1 rounded text-sm font-medium ${
+                      rental.status === 'active' ? 'bg-green-100 text-green-800' :
+                      rental.status === 'completed' ? 'bg-gray-100 text-gray-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      {rental.status.toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+    )
+  }
+  ```
+- [ ] **Understanding check**:
+  - How are dates formatted for display?
+  - What determines the status badge color?
+  - What shows if there are no rentals?
+  - How are related skateboard details accessed?
+- [ ] Visit: http://localhost:3000/rentals
+- [ ] **✓ Checkpoint**: Do you see your rental(s) with full details?
+
+### 🛠️ Task 4.5: Add Global Navigation Component
+**What you'll learn**: Layouts, reusable components, global navigation
+
+- [ ] Create folder: `/src/components`
+- [ ] Create file: `/src/components/Navigation.js`
+- [ ] Add code:
+  ```javascript
+  import Link from 'next/link'
+
+  export default function Navigation() {
+    return (
+      <nav className="bg-gray-800 text-white shadow-lg">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex justify-between items-center">
+            <Link href="/" className="text-2xl font-bold hover:text-gray-300 transition-colors">
+              🛹 Skateboard Rentals
+            </Link>
+            
+            <div className="space-x-6">
+              <Link href="/" className="hover:text-gray-300 transition-colors">
+                Browse
+              </Link>
+              <Link href="/rentals" className="hover:text-gray-300 transition-colors">
+                My Rentals
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+    )
+  }
+  ```
+- [ ] Open `/src/app/layout.js`
+- [ ] Import and add Navigation to layout:
+  ```javascript
+  import './globals.css'
+  import Navigation from '@/components/Navigation'
+
+  export const metadata = {
+    title: 'Skateboard Rental App',
+    description: 'Rent skateboards with ease',
+  }
+
+  export default function RootLayout({ children }) {
+    return (
+      <html lang="en">
+        <body>
+          <Navigation />
+          {children}
+        </body>
+      </html>
+    )
+  }
+  ```
+- [ ] **Think**:
+  - What does `@/` mean in the import path?
+  - Why add Navigation to layout instead of each page?
+  - How does this affect all pages?
+- [ ] Test navigation between pages
+- [ ] **✓ Checkpoint**: Does navigation appear on all pages and work?
+
+### ✅ Phase 4 Completion Checklist
+- [ ] Home page displays all skateboards in a grid
+- [ ] Can click skateboard to view details
+- [ ] Rental form validates and creates rentals
+- [ ] Price preview calculates correctly
+- [ ] Rentals page shows all rentals with full details
+- [ ] Navigation works across all pages
+- [ ] UI is responsive (test by resizing browser)
+- [ ] Server Components and Client Components used appropriately
+
+**🎓 What You Learned**: Server Components, Client Components, data fetching, form handling, state management, routing, Tailwind CSS, navigation
+
+---
+
+## Phase 5: Polish & Demo Preparation (Day 3-4, ~2-3 hours)
+
+### 🎯 Learning Objectives
+- Add loading and error states
+- Improve user experience
+- Understand production readiness
+- Prepare for demonstration
+
+### 🛠️ Task 5.1: Add Global Loading State
+**What you'll learn**: Next.js loading.js convention
+
+- [ ] Create file: `/src/app/loading.js`
+- [ ] Add code:
+  ```javascript
+  export default function Loading() {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col items-center justify-center min-h-screen">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600"></div>
+          <p className="mt-4 text-gray-600 text-lg">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+  ```
+- [ ] **Note**: This automatically shows while pages/data load!
+- [ ] Test: Refresh pages and watch for loading spinner
+
+### 🛠️ Task 5.2: Add Global Error Handling
+**What you'll learn**: Next.js error.js convention
+
+- [ ] Create file: `/src/app/error.js`
+- [ ] Add code:
+  ```javascript
+  'use client'
+
+  export default function Error({ error, reset }) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-lg max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold mb-2">⚠️ Something went wrong!</h2>
+          <p className="mb-4">{error.message}</p>
+          <button
+            onClick={() => reset()}
+            className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    )
+  }
+  ```
+- [ ] **What this does**: Catches errors in any Server Component
+
+### 🛠️ Task 5.3: Add Not Found Page
+**What you'll learn**: Custom 404 pages
+
+- [ ] Create file: `/src/app/not-found.js`
+- [ ] Add code:
+  ```javascript
+  import Link from 'next/link'
+
+  export default function NotFound() {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center max-w-2xl mx-auto mt-20">
+          <h1 className="text-6xl font-bold text-gray-800 mb-4">404</h1>
+          <h2 className="text-3xl font-semibold text-gray-700 mb-4">Page Not Found</h2>
+          <p className="text-gray-600 mb-8">The page you're looking for doesn't exist.</p>
+          <Link 
+            href="/" 
+            className="inline-block bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition-colors"
+          >
+            Go Home
+          </Link>
+        </div>
+      </div>
+    )
+  }
+  ```
+- [ ] Test: Visit http://localhost:3000/nonexistent
+
+### 🛠️ Task 5.4: Enhance Seed Data
+**What you'll learn**: Creating realistic demo data
+
+- [ ] Update `/prisma/seed.js` to add more skateboards (aim for 8-10 total)
+- [ ] Vary types, prices, and availability
+- [ ] Example additions:
+  ```javascript
+  {
+    name: 'Downhill Racer',
+    type: 'longboard',
+    size: '9.5"',
+    pricePerDay: 22.00,
+    isAvailable: true,
+  },
+  {
+    name: 'Park Special',
+    type: 'street',
+    size: '8.25"',
+    pricePerDay: 16.00,
+    isAvailable: true,
+  },
+  ```
+- [ ] Re-seed database: `npx prisma db seed`
+- [ ] **✓ Checkpoint**: Does home page show more variety?
+
+### 🛠️ Task 5.5: Add README Documentation
+**What you'll learn**: Project documentation
+
+- [ ] Create/update `/skateboard-rental-nextjs/README.md`
+- [ ] Include:
+  ```markdown
+  # Skateboard Rental Application (Next.js Prototype)
+
+  A full-stack skateboard rental web application built with Next.js, Prisma, and PostgreSQL.
+
+  ## Tech Stack
+
+  - **Frontend**: Next.js 14 (App Router), React, Tailwind CSS
+  - **Backend**: Next.js API Routes
+  - **Database**: PostgreSQL
+  - **ORM**: Prisma
+
+  ## Features
+
+  - Browse available skateboards
+  - View skateboard details
+  - Create rentals with date selection
+  - View rental history
+  - Real-time price calculation
+  - Automatic availability tracking
+
+  ## Setup Instructions
+
+  ### Prerequisites
+  - Node.js 18+
+  - PostgreSQL installed and running
+
+  ### Installation
+
+  1. Clone the repository
+  2. Install dependencies:
+     ```bash
+     npm install
+     ```
+
+  3. Set up environment variables:
+     - Copy `.env.example` to `.env`
+     - Update `DATABASE_URL` with your PostgreSQL credentials
+
+  4. Set up database:
+     ```bash
+     npx prisma migrate dev
+     npx prisma db seed
+     ```
+
+  5. Run development server:
+     ```bash
+     npm run dev
+     ```
+
+  6. Open http://localhost:3000
+
+  ## Demo Credentials
+
+  - Demo User ID: 1 (hardcoded for prototype)
+
+  ## Project Structure
+
+  - `/src/app` - Pages and API routes
+  - `/src/components` - Reusable components
+  - `/prisma` - Database schema and migrations
+  - `/public` - Static assets
+
+  ## Future Enhancements
+
+  - User authentication with NextAuth.js
+  - Admin dashboard
+  - Payment integration
+  - Return/completion workflow
+  - Email notifications
+  ```
+
+### 🛠️ Task 5.6: Create Demo Script
+**What you'll learn**: Presentation planning
+
+- [ ] Create file: `/skateboard-rental-nextjs/DEMO_SCRIPT.md`
+- [ ] Write your demo steps:
+  ```markdown
+  # Demo Script - Skateboard Rental App (3-4 minutes)
+
+  ## Preparation
+  - [ ] Database seeded with data
+  - [ ] Dev server running on http://localhost:3000
+  - [ ] Prisma Studio ready (optional to show DB)
+  - [ ] Browser window at comfortable zoom level
+
+  ## 1. Introduction (30 seconds)
+  "This is a full-stack skateboard rental application built with Next.js, Prisma, and PostgreSQL."
+
+  ## 2. Browse Skateboards (45 seconds)
+  - Show home page with skateboard grid
+  - Point out different types and prices
+  - Highlight availability status
+  - "We have street boards, cruisers, longboards, and even electric"
+
+  ## 3. Create a Rental (90 seconds)
+  - Click on an available skateboard
+  - Show detail page
+  - Fill in rental dates (e.g., tomorrow and 3 days from now)
+  - Point out real-time price calculation
+  - Submit rental
+  - Show success alert
+
+  ## 4. View Rentals Dashboard (30 seconds)
+  - Navigate to "My Rentals"
+  - Show the rental just created
+  - Point out dates, skateboard info, and total price
+  - Mention status tracking
+
+  ## 5. Technical Overview (45 seconds)
+  - "Built with Next.js App Router - combines frontend and backend"
+  - "Uses Server Components for initial data fetching"
+  - "Client Components for interactive forms"
+  - "Prisma ORM for type-safe database access"
+  - "PostgreSQL for data persistence"
+  - (Optional) Open Prisma Studio to show database
+
+  ## Questions to Anticipate
+  - **Q: Why Next.js?**
+    A: Full-stack framework, great DX, server and client components, built-in API routes
+  
+  - **Q: How would you add authentication?**
+    A: NextAuth.js - built for Next.js, supports many providers
+  
+  - **Q: How would you deploy?**
+    A: Vercel (made by Next.js creators), connects to GitHub, handles DB and frontend
+  
+  - **Q: What's next?**
+    A: User auth, return process, admin dashboard, payment integration
+  ```
+
+### 🛠️ Task 5.7: Practice Demo
+**What you'll learn**: Presentation skills, identifying issues
+
+- [ ] Run through complete demo flow 2-3 times
+- [ ] Time yourself (aim for 3-4 minutes)
+- [ ] Note any slow or confusing parts
+- [ ] Practice explaining technical choices
+- [ ] Prepare for questions
+
+### ✅ Phase 5 Completion Checklist
+- [ ] Loading states work automatically
+- [ ] Error handling page exists
+- [ ] 404 page created
+- [ ] Database has good variety of seed data
+- [ ] README documentation written
+- [ ] Demo script prepared
+- [ ] Can complete full demo flow smoothly in under 5 minutes
+- [ ] Comfortable explaining technical decisions
+
+**🎓 What You Learned**: UX improvements, error handling, documentation, presentation preparation
+
+---
+
+## 🎯 Final Knowledge Check
+
+### Test Your Understanding - Answer These Questions
+
+#### Next.js Fundamentals
+- [ ] What is the difference between Server and Client Components?
+- [ ] When would you use `'use client'`?
+- [ ] How does file-based routing work in the App Router?
+- [ ] What is the purpose of `layout.js`?
+- [ ] What happens when you create `loading.js` or `error.js`?
+
+#### Prisma & Database
+- [ ] What is a database migration and why use them?
+- [ ] How do you define relationships between models in Prisma?
+- [ ] What does `include` do in a Prisma query?
+- [ ] How does database seeding work?
+- [ ] What's the difference between `findMany` and `findUnique`?
+
+#### API Design
+- [ ] What HTTP methods did you use and why?
+- [ ] How do you handle errors in API routes?
+- [ ] How do you parse request body in Next.js API routes?
+- [ ] What status codes did you use (200, 201, 400, 404, 500)?
+- [ ] How are dynamic route parameters accessed?
+
+#### React & State Management
+- [ ] What is `useState` and when do you use it?
+- [ ] How do controlled forms work in React?
+- [ ] What is `useRouter` used for?
+- [ ] How do you prevent default form submission?
+- [ ] What's the difference between server-side and client-side data fetching?
+
+---
+
+## 🏆 What You Built
+
+Congratulations! You've built a production-ready prototype with:
+
+### ✅ Backend (API Routes)
+- RESTful API endpoints
+- PostgreSQL database integration
+- Schema design and migrations
+- CRUD operations with Prisma
+- Error handling and validation
+- Business logic (price calculation, availability)
+
+### ✅ Frontend (Next.js)
+- Multiple pages with routing
+- Server Components for data fetching
+- Client Components for interactivity
+- Forms with validation
+- Responsive UI with Tailwind CSS
+- Global navigation and layouts
+
+### ✅ Features
+- Browse skateboards catalog
+- View skateboard details
+- Create rentals with date selection
+- Real-time price calculation
+- View rental history dashboard
+- Automatic availability tracking
+- Loading and error states
+
+---
+
+## 📚 Bonus Challenges (Optional - If You Have Extra Time)
+
+### Challenge 1: Add Return Functionality
+**Difficulty**: Medium
+- [ ] Add "Complete Rental" button on active rentals
+- [ ] Create PUT /api/rentals/[id]/complete endpoint
+- [ ] Update rental status to "completed"
+- [ ] Set skateboard back to available
+- [ ] Show completion confirmation
+
+### Challenge 2: Filter Skateboards by Type
+**Difficulty**: Easy
+- [ ] Add filter buttons for types (street, cruiser, longboard, electric)
+- [ ] Use URL search params (e.g., `/?type=cruiser`)
+- [ ] Filter skateboards in the data fetch
+- [ ] Highlight active filter button
+
+### Challenge 3: Add User Statistics
+**Difficulty**: Medium
+- [ ] Create /profile page
+- [ ] Show total rentals count
+- [ ] Calculate and show total amount spent
+- [ ] List favorite skateboard type
+
+### Challenge 4: Improve with Real Images
+**Difficulty**: Easy
+- [ ] Find skateboard images online
+- [ ] Save to `/public/images/`
+- [ ] Update seed data with real image paths
+- [ ] Use Next.js `<Image>` component
+- [ ] Add image optimization
+
+### Challenge 5: Deploy to Production
+**Difficulty**: Medium-Hard
+- [ ] Create Vercel account
+- [ ] Set up PostgreSQL on Neon (free tier) or Supabase
+- [ ] Push code to GitHub
+- [ ] Connect Vercel to your repository
+- [ ] Configure environment variables
+- [ ] Deploy and test live
+- [ ] Share the link!
+
+---
+
+## 🎓 Next Learning Steps
+
+Now that you've mastered the basics, continue learning:
+
+1. **Authentication**: Add NextAuth.js for real user accounts and sessions
+2. **Testing**: Learn Jest and React Testing Library for unit/integration tests
+3. **TypeScript**: Convert the project to TypeScript for type safety
+4. **Advanced Prisma**: Learn transactions, complex queries, raw SQL
+5. **Performance**: Learn Next.js caching strategies, image optimization
+6. **Deployment**: Deploy to Vercel and set up CI/CD
+7. **Advanced Features**: Real-time updates with WebSockets, notifications
+
+---
+
+## 🆘 Troubleshooting Guide
+
+### Database Connection Issues
+- **Error**: "Can't reach database server"
+  - Solution: Check PostgreSQL is running, verify DATABASE_URL
+  - Run: `npx prisma studio` to test connection
+
+### Migration Errors
+- **Error**: "Migration failed"
+  - Solution: Reset database: `npx prisma migrate reset`
+  - Re-run: `npx prisma migrate dev`
+
+### API Route Not Working
+- **Error**: 404 on API call
+  - Solution: Check folder structure in `/src/app/api/`
+  - Verify `route.js` filename (not `routes.js`)
+  - Restart dev server
+
+### Form Not Submitting
+- **Error**: Nothing happens on submit
+  - Solution: Check browser console for errors
+  - Verify `'use client'` directive exists
+  - Check API endpoint URL (relative vs absolute)
+
+### General Debugging Tips
+- Use `console.log()` liberally
+- Check browser DevTools Network tab for API calls
+- Use Prisma Studio to verify database state
+- Read error messages carefully
+- Check Next.js docs for the specific feature
+
+---
+
+## 📖 Resources
+
+### Documentation
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Prisma Documentation](https://www.prisma.io/docs)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+
+### Learning Resources
+- Next.js Learn Course (interactive tutorial)
+- Prisma Getting Started Guide
+- React Documentation (for hooks and concepts)
+- MDN Web Docs (for JavaScript fundamentals)
+
+---
+
+**Good luck with your learning journey! 🛹🚀**

@@ -1,5 +1,125 @@
 # Skateboard Rental Application - Implementation Plan
 
+## Simplified Prototype Plan (Next.js + PostgreSQL)
+
+### Goal
+Deliver a minimal, working demo that shows the core flow in class: browse boards, create a rental, and view rentals. This is a separate prototype and must not modify the existing React/Node project.
+
+### Project Location (Separate)
+- New folder: `skateboard-rental-nextjs/` (sibling to the current project)
+
+### Tech Stack (Prototype)
+- **Next.js (App Router)** for full-stack UI + API routes
+- **PostgreSQL** for persistence
+- **Prisma** for schema/migrations and data access
+- **Basic auth stub** (demo-only: single seeded user, email+password check)
+
+### Scope (Must-Have)
+- Home page listing available skateboards
+- Skateboard detail page
+- Create rental (select board, start/end dates)
+- Rentals dashboard for the logged-in user
+- Seeded data for boards and demo user
+
+### Out of Scope (Prototype)
+- Payments, QR codes, email, admin panels, advanced search, and role-based access
+
+---
+
+## Phase 1: Project Setup (0.5 day)
+
+**Tasks**
+- [ ] Create a Next.js app in `skateboard-rental-nextjs/`
+- [ ] Add Prisma and PostgreSQL connection
+- [ ] Initialize schema and run first migration
+- [ ] Add seed script for demo boards and user
+
+**Deliverables**
+- App runs locally with seeded database
+
+---
+
+## Phase 2: Core Data Model (0.5 day)
+
+**Schema**
+- `User` (id, email, passwordHash)
+- `Skateboard` (id, name, type, size, pricePerDay, isAvailable)
+- `Rental` (id, userId, skateboardId, startDate, endDate, totalPrice, status)
+
+**Deliverables**
+- Prisma models + migration checked in
+
+---
+
+## Phase 3: API Routes (1 day)
+
+**Endpoints (App Router)**
+- `GET /api/skateboards` list
+- `GET /api/skateboards/[id]` detail
+- `POST /api/rentals` create rental
+- `GET /api/rentals` list rentals for demo user
+
+**Notes**
+- Keep validation simple (date order, availability flag)
+- Use a constant demo user id for prototype
+
+**Deliverables**
+- API routes working with real DB data
+
+---
+
+## Phase 4: UI Pages (1 day)
+
+**Pages**
+- `/` Home listing
+- `/skateboards/[id]` detail
+- `/rentals` rentals dashboard
+- `/rent` form page (or modal)
+
+**Deliverables**
+- End-to-end flow from listing to rental creation
+
+---
+
+## Phase 5: Demo Polish (0.5 day)
+
+**Tasks**
+- [ ] Add basic validation messages
+- [ ] Simple availability toggle after rental creation
+- [ ] Seed script ready for quick reset
+
+**Deliverables**
+- Smooth demo flow for in-class presentation
+
+---
+
+## Demo Script (5-7 minutes)
+
+1. Open Home page, show list of boards
+2. Open a board detail page
+3. Create a rental with dates
+4. Navigate to Rentals dashboard and show the new rental
+5. (Optional) Show DB row in Prisma Studio
+
+---
+
+## Risks and Mitigations
+
+- **DB connection issues**: provide `.env.example` with `DATABASE_URL`
+- **Seed drift**: use idempotent seed script
+- **Time**: keep UI simple and focus on flow
+
+---
+
+## Cut-Down Timeline (3-4 days total)
+
+- Day 1: setup + schema + seed
+- Day 2: API routes
+- Day 3: UI pages
+- Day 4: polish + demo rehearsal
+
+---
+
 ## 1. Project Overview & Technology Stack
 
 ### 1.1 Technology Choices
