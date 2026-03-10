@@ -7,6 +7,7 @@ export default function Rentals() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     fetchSkateboards();
@@ -14,7 +15,7 @@ export default function Rentals() {
 
   const fetchSkateboards = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/skateboards');
+      const response = await fetch(`${API_URL}/api/skateboards`);
       
       if (response.ok) {
         const data = await response.json();

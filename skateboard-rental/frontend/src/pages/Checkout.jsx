@@ -10,6 +10,7 @@ export default function Checkout() {
   const [endDate, setEndDate] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     // Check if user is logged in
@@ -24,7 +25,7 @@ export default function Checkout() {
 
   const fetchSkateboard = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/skateboards/${id}`);
+      const response = await fetch(`${API_URL}/api/skateboards/${id}`);
       
       if (response.ok) {
         const data = await response.json();
@@ -94,7 +95,7 @@ export default function Checkout() {
     const token = localStorage.getItem('token');
 
     try {
-      const response = await fetch('http://localhost:5000/api/rentals', {
+      const response = await fetch(`${API_URL}/api/rentals`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

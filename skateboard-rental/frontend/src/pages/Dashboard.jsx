@@ -7,6 +7,7 @@ export default function Dashboard() {
   const [rentals, setRentals] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -23,11 +24,11 @@ export default function Dashboard() {
 
   const fetchDashboardData = async (token) => {
     try {
-      const userResponse = await fetch('http://localhost:5000/api/users/me', {
+      const userResponse = await fetch(`${API_URL}/api/users/me`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
-      const rentalsResponse = await fetch('http://localhost:5000/api/rentals', {
+      const rentalsResponse = await fetch(`${API_URL}/api/rentals`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -62,7 +63,7 @@ export default function Dashboard() {
 
     try {
       console.log('Canceling rental:', rentalId);
-      const response = await fetch(`http://localhost:5000/api/rentals/${rentalId}/cancel`, {
+      const response = await fetch(`${API_URL}/api/rentals/${rentalId}/cancel`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
