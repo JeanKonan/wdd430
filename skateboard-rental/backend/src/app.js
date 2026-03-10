@@ -6,8 +6,11 @@ import { rentalRoutes } from './routes/rentalRoutes.js';
 import { userRoutes } from './routes/userRoutes.js';
 
 const app = express();
+const ORIGIN = process.env.ORIGIN || 'http://localhost:5173';
 
-app.use(cors());
+app.use(cors({
+  origin: ORIGIN
+}));
 app.use(express.json());
 
 // Routes
